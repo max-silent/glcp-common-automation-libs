@@ -1,0 +1,57 @@
+# This is a basic workflow to help you get started with Actions
+
+name: library_docs
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow when we push to master
+  push:
+    branches: [ mainline ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build_docs:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f docs/requirements.txt ]; then pip install -r docs/requirements.txt; fi
+
+      - name: make the sphinx docs
+        run: |
+          cd docs
+          make clean
+          find source -type f -name 'hpe_*' -delete
+          find source -type f -name 'modules.rst' -delete
+          sphinx-apidoc -f -o source/ ../automation_libs/hpe_glcp_automation_lib
+          make html
+
+      - name: Init new repo and commit generated files
+        run: |
+          cd docs/build/html/
+          git init
+          touch .nojekyll
+          git add -A
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m 'deploy'
+
+      - name: Force push to destination branch
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          force: true
+          directory: ./docs/build/html

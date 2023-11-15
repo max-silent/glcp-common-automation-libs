@@ -1,0 +1,19 @@
+# Global code owners
+* @glcp/cafe-core
+
+# Code owners per service
+# The convention is to create a GitHub team for each service with the naming convention 'cafe-lib-<SERVICE>'.
+**/acct_mgmt @glcp/cafe-lib-acct-mgmt @glcp/cafe-core
+**/add @glcp/cafe-lib-add @glcp/cafe-core
+**/adi @glcp/cafe-lib-adi @glcp/cafe-core
+**/aop @glcp/cafe-lib-aop @glcp/cafe-core
+**/app_catalog @glcp/cafe-lib-app-catalog @glcp/cafe-core
+**/app_prov @glcp/cafe-lib-app-prov @glcp/cafe-core
+**/audit_logs @glcp/cafe-lib-audit-log @glcp/cafe-core
+**/authn @glcp/cafe-lib-authn @glcp/cafe-core
+**/authz @glcp/cafe-lib-authz @glcp/cafe-core
+**/ccs_manager @glcp/cafe-lib-ccs-manager @glcp/cafe-core
+**/commons @glcp/cafe-lib-commons @glcp/cafe-core
+**/sm @glcp/cafe-lib-sm @glcp/cafe-core
+**/ui_doorway @glcp/cafe-lib-ui-doorway @glcp/cafe-core
+**/report_mgmt @glcp/cafe-lib-reporting_fw @glcp/cafe-core

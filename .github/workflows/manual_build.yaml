@@ -1,0 +1,78 @@
+name: Manual Dev Build
+
+on:
+  workflow_dispatch
+
+# on: [push]
+
+env:
+  APP_NAME: glcp-common-automation-libs
+  version: "2.${GITHUB_RUN_NUMBER}.0"
+  jfrog_user: ${{ secrets.CCS_JFROG_USERNAME }}
+  jfrog_passwd: ${{ secrets.CCS_JFROG_PASSWORD }}
+  gh_token: ${{ secrets.GLCP_GH_TOKEN }}
+
+
+jobs:
+
+  Git_Tag:
+    runs-on: ubuntu-latest
+    name: Create and update new git tag test
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Version
+        id: tag_version
+        shell: bash
+        run: |
+            export tag=${{ env.version }}-dev
+            echo "Git Tag version: $tag"
+            echo "::set-output name=tag::$tag"
+    outputs:
+      tag: ${{ steps.tag_version.outputs.tag }}
+
+  BUILD_PUBLISH:
+    needs: Git_Tag
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/ccsportal/ubuntu:python38-202011062117
+      credentials:
+        username: ${{ secrets.CCS_QUAY_CCSPORTAL_BUILDER }}
+        password: ${{ secrets.CCS_QUAY_CCSPORTAL_BUILDER_PASSWORD }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        shell: bash
+        run: |
+           apt-get update
+           apt-get -y dist-upgrade
+           apt-get install --no-install-recommends --no-install-suggests -y curl libpq-dev build-essential python3.7 python3.7-dev python3-pip python3-setuptools
+           update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
+           python -m pip install -U pip
+           cp -R /usr/lib/python3.7 /var/tmp/python3.7
+           apt-get -y remove supervisor
+           pip install supervisor poetry
+           mkdir -p /var/log/supervisor
+           ln -sf /usr/local/bin/supervisord /usr/bin/supervisord
+      - name: Build
+        id: build
+        shell: bash
+        run: |
+          export JFROG_USERNAME=${jfrog_user}
+          export JFROG_PASSWORD=${jfrog_passwd}
+          export version=${{ needs.Git_Tag.outputs.tag }}
+          ./build.sh
+      - name: Publish
+        id: publish
+        shell: bash
+        run: |
+          export JFROG_USERNAME=${jfrog_user}
+          export JFROG_PASSWORD=${jfrog_passwd}
+          export version=${{ needs.Git_Tag.outputs.tag }}
+          ./publish.sh
+    outputs:
+     tag: ${{ needs.Git_Tag.outputs.tag }}

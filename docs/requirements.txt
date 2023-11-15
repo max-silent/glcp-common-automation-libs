@@ -1,0 +1,16 @@
+sphinx>7.1, <7.2
+furo
+playwright
+pyotp
+oauthlib
+allure-pytest
+selenium
+click
+google
+boto3
+ldclient
+requests_oauthlib
+ldclient-py
+lxml
+aiohttp
+google
