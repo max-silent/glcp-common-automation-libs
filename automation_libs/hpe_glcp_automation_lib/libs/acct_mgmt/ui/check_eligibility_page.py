@@ -3,7 +3,7 @@ This file holds functions for Check Eligibility page
 """
 import logging
 
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from hpe_glcp_automation_lib.libs.acct_mgmt.ui.create_user_data import (
     CheckEligibilityData,
@@ -65,7 +65,6 @@ class CheckEligibility(BasePage):
             CheckEligibilitySelectors.CUSTOMER_LOCATION_OPTION_ROLE,
             exact_match=True,
         )
-
         self.page.locator(CheckEligibilitySelectors.NETWORK_COUNT_INPUT).fill(
             eligibility_check_data.network_count
         )
@@ -77,4 +76,15 @@ class CheckEligibility(BasePage):
         )
         self.pw_utils.save_screenshot(self.test_name)
         self.page.locator(CheckEligibilitySelectors.SUBMIT_BUTTON).click()
-        self.page.locator(CheckEligibilitySelectors.CONTINUE_BUTTON).click()
+
+    def should_contain_heading_step_title(self, text):
+        """
+        Method to Check heading step title text on check-eligibility page.
+        param: (text): string {Text to be compared}
+        returns: self reference
+
+        """
+        expect(
+            self.page.locator(CheckEligibilitySelectors.HEADING_STEP_TITLE)
+        ).to_contain_text(text)
+        return self

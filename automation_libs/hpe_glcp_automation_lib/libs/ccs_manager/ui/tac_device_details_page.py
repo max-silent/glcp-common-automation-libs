@@ -6,7 +6,7 @@ import logging
 from playwright.sync_api import Page, expect
 
 from hpe_glcp_automation_lib.libs.ccs_manager.ui.locators import TacDeviceDetailsSelectors
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
 from hpe_glcp_automation_lib.libs.commons.utils.pwright.pwright_utils import TableUtils
 
 log = logging.getLogger(__name__)

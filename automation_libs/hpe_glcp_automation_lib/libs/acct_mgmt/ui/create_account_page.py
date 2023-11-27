@@ -4,7 +4,7 @@ This file holds methods to create a new account
 """
 import logging
 
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from hpe_glcp_automation_lib.libs.acct_mgmt.ui.create_user_data import CreateUserData
 from hpe_glcp_automation_lib.libs.acct_mgmt.ui.locators import CreateAcctSelectors
@@ -71,4 +71,13 @@ class CreateAcctPage(BasePage):
         self.page.goto(self.url)
         self.page.locator(CreateAcctSelectors.CREATE_ACCT_BTN).click()
         self.page.wait_for_selector(CreateAcctSelectors.SETUP_ACCT_COMP_NAME)
+        return self
+
+    def should_have_submit_button(self):
+        """
+        Verifies that the create new workspace button has been clicked \
+        And that the appropriate form has been opened
+        :return current instance:
+        """
+        expect(self.page.locator(CreateAcctSelectors.ACCT_SUBMIT)).to_be_visible()
         return self

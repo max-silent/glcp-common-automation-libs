@@ -63,6 +63,7 @@ class AddDevices(BasePage):
 
     def select_serial_and_mac_option(self):
         """Choose option for adding by serial number and mac-address at Add Devices wizard.
+        Applicable for "Networking Devices" type chosen at previous screen of Add Devices wizard.
 
         :return: current instance of AddDevices page object.
         """
@@ -70,6 +71,30 @@ class AddDevices(BasePage):
             "Playwright: Choose adding device by serial and mac-address at Add Devices wizard."
         )
         self.page.locator(AddDevicesSelectors.SERIAL_AND_MAC_RADIO).click()
+        return self
+
+    def select_iaas_option(self):
+        """Choose option for adding IaaS device by serial number and part number at Add Devices wizard.
+        Applicable for "Storage Devices" type chosen at previous screen of Add Devices wizard.
+
+        :return: current instance of AddDevices page object.
+        """
+        log.info(
+            "Playwright: Choose adding device by serial and part number at Add Devices wizard."
+        )
+        self.page.locator(AddDevicesSelectors.IAAS_RADIO).click()
+        return self
+
+    def select_purchase_or_lease_option(self):
+        """Choose option for adding Purchase or Lease device by serial number and license key at Add Devices wizard.
+        Applicable for "Storage Devices" type chosen at previous screen of Add Devices wizard.
+
+        :return: current instance of AddDevices page object.
+        """
+        log.info(
+            "Playwright: Choose adding device by serial number and subscription key at Add Devices wizard."
+        )
+        self.page.locator(AddDevicesSelectors.PURCHASE_OR_LEASE_RADIO).click()
         return self
 
     def pickup_upload_device_csv_file(self, file_path):
@@ -90,6 +115,7 @@ class AddDevices(BasePage):
 
     def enter_serial_and_mac(self, serial, mac_addr):
         """Enter serial number and mac-address at Add Devices wizard.
+        Applicable for "Networking Devices" -> "Serial Number & MAC Address" option chosen.
 
         :param serial: device's serial number.
         :param mac_addr: device's mac-address.
@@ -100,6 +126,38 @@ class AddDevices(BasePage):
         )
         self.page.locator(AddDevicesSelectors.SERIAL_NUMBER_INPUT).fill(serial)
         self.page.locator(AddDevicesSelectors.MAC_ADDRESS_INPUT_SERIAL).fill(mac_addr)
+        self.page.locator(AddDevicesSelectors.ENTER_BUTTON).click()
+        return self
+
+    def enter_serial_and_part_no(self, serial, part_no):
+        """Enter serial number and part number at Add Devices wizard.
+        Applicable for "Storage Devices" -> "Infrastructure as a Service" option chosen.
+
+        :param serial: device's serial number.
+        :param part_no: device's part number.
+        :return: current instance of AddDevices page object.
+        """
+        log.info(
+            f"Playwright: Enter serial '{serial}' and part number '{part_no}' at Add Devices wizard."
+        )
+        self.page.locator(AddDevicesSelectors.SERIAL_NUMBER_INPUT).fill(serial)
+        self.page.locator(AddDevicesSelectors.PART_NUMBER_INPUT).fill(part_no)
+        self.page.locator(AddDevicesSelectors.ENTER_BUTTON).click()
+        return self
+
+    def enter_serial_and_subscr_key(self, serial, subscr_key):
+        """Enter serial number and subscription key at Add Devices wizard.
+        Applicable for "Storage Devices" -> "Purchase or Lease" option chosen.
+
+        :param serial: device's serial number.
+        :param subscr_key: device's subscription key.
+        :return: current instance of AddDevices page object.
+        """
+        log.info(
+            f"Playwright: Enter serial '{serial}' and subscription key '{subscr_key}' at Add Devices wizard."
+        )
+        self.page.locator(AddDevicesSelectors.SERIAL_NUMBER_INPUT).fill(serial)
+        self.page.locator(AddDevicesSelectors.SUBSCRIPTION_KEY_INPUT).fill(subscr_key)
         self.page.locator(AddDevicesSelectors.ENTER_BUTTON).click()
         return self
 
@@ -132,6 +190,30 @@ class AddDevices(BasePage):
         self.page.locator(AddDevicesSelectors.CLOSE_BTN).click()
         # Note: page object cannot be returned when navigating to the previous pages due to the circular import
 
+    def click_cancel_button(self):
+        """Click "Cancel" button of Add Devices wizard's popup.
+
+        :return: current instance of AddDevices page object.
+        """
+        log.info("Playwright: click 'Cancel' button at Add Devices wizard.")
+        self.page.locator(AddDevicesSelectors.CANCEL_BTN).click()
+        return self
+
+    def click_cancel_continue_button(self):
+        """Click 'Continue' button of Add Devices wizard's 'Exit Without Finishing' popup.
+
+        :return: current instance of AddDevices page object.
+        """
+        log.info("Playwright: click 'Continue' button at 'Exit Without Finishing' popup.")
+        self.page.locator(AddDevicesSelectors.CANCEL_CONT_BTN).click()
+        return self
+
+    def click_cancel_exit_button(self):
+        """Click 'Exit' button of Add Devices wizard's 'Exit Without Finishing' popup."""
+        log.info("Playwright: click 'Exit' button at 'Exit Without Finishing' popup.")
+        self.page.locator(AddDevicesSelectors.CANCEL_EXIT_BTN).click()
+        # Note: page object cannot be returned when navigating to the previous pages due to the circular import
+
     def should_have_rows_count(self, count):
         """Check that displayed rows count in table is matched to expected.
 
@@ -142,4 +224,15 @@ class AddDevices(BasePage):
         self.pw_utils.save_screenshot(self.test_name)
         expect(self.page.locator(AddDevicesSelectors.TABLE_ROWS)).to_have_count(count)
         self.page.wait_for_load_state("domcontentloaded")
+        return self
+
+    def should_have_header_title(self, text):
+        """Check add device dialogue box has header title as given text.
+
+        :return: current instance of AddDevices page object.
+        """
+        log.info(
+            f"Playwright: check add device dialogue box has header title as '{text}'."
+        )
+        expect(self.page.locator(AddDevicesSelectors.HEADER_TITLE)).to_have_text(text)
         return self

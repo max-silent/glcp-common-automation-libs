@@ -3,7 +3,8 @@ import logging
 from playwright.sync_api import Page, expect
 
 from hpe_glcp_automation_lib.libs.adi.ui.locators import DeviceDetailsSelectors
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.audit_logs.ui.audit_logs_page import AuditLogs
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
 
 log = logging.getLogger(__name__)
 
@@ -28,6 +29,98 @@ class DeviceDetails(HeaderedPage):
         log.info("Playwright: navigating back to devices list.")
         self.page.locator(DeviceDetailsSelectors.DEVICES_BTN).click()
         # Note: page object cannot be returned when navigating to the previous pages due to the circular import
+
+    def get_application_instance(self):
+        """Get Application Instance at device details page.
+        :return: Application Instance value
+        """
+        log.info(f"Playwright: get application instance value at device details page")
+        return self.page.locator(DeviceDetailsSelectors.APP_INSTANCE_VALUE).text_content()
+
+    def remove_assignment(self):
+        """Remove Application Assignment form the device.
+        :return: current instance of Device Details page object.
+        """
+        log.info("Playwright: click 'Remove Assignment' button.")
+        self._open_actions()
+        self.page.locator(DeviceDetailsSelectors.REMOVE_ASSIGNMENT).click()
+        self.page.locator(DeviceDetailsSelectors.REMOVE_APP_ASSIGNMENT).click()
+        self.wait_for_loaded_state()
+        return self
+
+    def archive_device(self):
+        """Archive a device.
+        :return: current instance of Device Details page object.
+        """
+        log.info("Playwright: Archive a device.")
+        self._open_actions()
+        self.page.locator(DeviceDetailsSelectors.ARCHIVE_BTN).click()
+        self.page.locator(DeviceDetailsSelectors.ARCHIVE_CONFIRM_BTN).click()
+        self.wait_for_loaded_state()
+        return self
+
+    def unarchive_device(self):
+        """Un-archive a device.
+        :return: current instance of Device Details page object.
+        """
+        log.info("Playwright: Un-archive a device.")
+        self._open_actions()
+        self.page.locator(DeviceDetailsSelectors.UNARCHIVE_BTN).click()
+        self.page.locator(DeviceDetailsSelectors.ARCHIVE_CONFIRM_BTN).click()
+        self.wait_for_loaded_state()
+        return self
+
+    def click_popup_cancel_button(self):
+        """Close a dialog by clicking 'Cancel' popup button.
+        :return: current instance of Device Details page object.
+        """
+        log.info("Playwright: Close a dialog by clicking 'Cancel' button.")
+        self.page.locator(DeviceDetailsSelectors.CANCEL_BTN).click()
+        return self
+
+    def view_audit_logs_after_action(self):
+        """Click 'View Audit Logs' on after-action popup.
+        :return: Audit Log page object.
+        """
+        log.info("Playwright: Close a dialog.")
+        self.page.locator(DeviceDetailsSelectors.VIEW_AUDIT_LOG_BTN).click()
+        return AuditLogs(self.page, self.cluster)
+
+    def should_be_available_for_assignment(self):
+        """Check if device is available for assignment.
+        :return: current instance of Device Details page object.
+        """
+        log.info(
+            f"Playwright: check if device is available for assign at device details page"
+        )
+        self._open_actions()
+        expect(
+            self.page.locator(DeviceDetailsSelectors.ASSIGN_APPLICATION_BTN)
+        ).to_have_text("Assign to Application")
+        return self
+
+    def should_be_available_for_archiving(self):
+        """Check if device is available for archiving.
+        :return: current instance of Device Details page object.
+        """
+        log.info(
+            f"Playwright: check if device is available for archive at device details page"
+        )
+        self._open_actions()
+        expect(self.page.locator(DeviceDetailsSelectors.ARCHIVE_BTN)).to_be_visible()
+        return self
+
+    def should_be_available_for_unarchiving(self):
+        """Check if device is available for un-archiving.
+
+        :return: current instance of Device Details page object.
+        """
+        log.info(
+            f"Playwright: check if device is available for un-archive at device details page"
+        )
+        self._open_actions()
+        expect(self.page.locator(DeviceDetailsSelectors.UNARCHIVE_BTN)).to_be_visible()
+        return self
 
     def should_have_mac_address(self, mac_addr):
         """Check displayed MAC-address at device details page.
@@ -115,4 +208,13 @@ class DeviceDetails(HeaderedPage):
                 DeviceDetailsSelectors.TAG_TEMPLATE.format(expected_text_value)
             )
         ).to_be_visible()
+        return self
+
+    def _open_actions(self):
+        """Open actions dialog.
+        :return: current instance of Device Details page object.
+        """
+        if self.page.locator(DeviceDetailsSelectors.ACTIONS_POPUP).is_hidden():
+            log.info("Playwright: click 'Actions' button.")
+            self.page.locator(DeviceDetailsSelectors.ACTIONS_DROPDOWN).click()
         return self

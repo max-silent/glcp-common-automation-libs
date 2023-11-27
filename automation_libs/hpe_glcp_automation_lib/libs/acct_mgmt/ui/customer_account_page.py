@@ -14,9 +14,9 @@ from hpe_glcp_automation_lib.libs.acct_mgmt.ui.locators import (
     CustomerAccountSelectors,
     DeleteCustomerSelectors,
 )
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
 from hpe_glcp_automation_lib.libs.commons.ui.home_page import HomePage
 from hpe_glcp_automation_lib.libs.commons.ui.manage_account_page import ManageAccount
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
 
 log = logging.getLogger(__name__)
 
@@ -151,7 +151,7 @@ class CustomerAccount(HeaderedPage):
                 CustomerAccountSelectors.CUSTOMER_ACTIONS.format(customer_name)
             ).click()
             self.page.locator(CustomerAccountSelectors.DELETE_CUSTOMER_BTN).click()
-            self.page.wait_for_selector(DeleteCustomerSelectors.TERMS_CHECKBOX).click()
+            self.page.locator(DeleteCustomerSelectors.TERMS_CHECKBOX).click()
             self.page.locator(DeleteCustomerSelectors.DELETE_ACCOUNT_BTN).click()
         except Exception as ex:
             log.error("Unable to delete the customer {}".format(customer_name))
@@ -161,6 +161,8 @@ class CustomerAccount(HeaderedPage):
 
     def open_customer_details(self, customer_name: str):
         """
+        *** NOTE *** This method will be deprecated, please make sure to switch to open_customer_details_by_pcid()
+        or HlpOpenCustomerDetails.open_customer_details() from helpers directory.
         Load the details for the specified customer
 
         :param customer_name: name of the customer whose details to be opened.
@@ -174,6 +176,20 @@ class CustomerAccount(HeaderedPage):
         home.wait_for_loaded_state().open_return_msp_account().wait_for_loaded_state().nav_bar.navigate_to_customers()
         self.wait_for_loaded_state()
         self.search_customer(customer_name)
+        self.page.locator(
+            CustomerAccountSelectors.CUSTOMER_ACTIONS.format(customer_name)
+        ).click()
+        self.page.locator(CustomerAccountSelectors.VIEW_DETAILS_BTN).click()
+        return CustomerDetails(self.page, self.cluster, pcid)
+
+    def open_customer_details_by_pcid(self, customer_name: str, pcid: str):
+        """
+        Open the details for the specified customer
+
+        :param customer_name: Name of the Customer
+        :param pcid: PC ID of the customer whose details to be opened.
+        :return: instance of Customer details page object.
+        """
         self.page.locator(
             CustomerAccountSelectors.CUSTOMER_ACTIONS.format(customer_name)
         ).click()
@@ -194,4 +210,43 @@ class CustomerAccount(HeaderedPage):
         self.page.locator(CustomerAccountSelectors.GENERATE_REPORT_BTN).click()
         self.pw_utils.save_screenshot(self.test_name)
         self.page.locator(AddCustomerSelectors.CREATION_MSG_CLOSE_BTN).click()
+        return self
+
+    def clear_filters(self):
+        """
+        Clicks the clear filters button.
+        :return: self.
+        """
+        log.info("Playwright clicking clear filters button")
+        self.page.locator(CustomerAccountSelectors.CLEAR_FILTER_BTN).click()
+        return self
+
+    def filter_by_deployed_service(self, service_name, region, time_range):
+        """
+        Applies given filters in filter menu.
+        :params service_name: the name of the service to filter by
+        :params region: the region to filter in which the service is deployed
+        :params time_range: range of service deployment for availability
+        :return: self.
+        """
+        log.info(f"Playwright entering {service_name} and {time_range} into filter menu")
+        service_name = service_name + " - " + region
+        self.page.locator(CustomerAccountSelectors.FILTER_BTN).click()
+        self.pw_utils.select_drop_down_element(
+            CustomerAccountSelectors.SERVICE_FILTER_DROPDOWN,
+            CustomerAccountSelectors.SERVICE_FILTER_BTN_TEMPLATE.format(service_name),
+            element_role="option",
+        )
+        is_custom_range = "-" in time_range
+        list_item_text = "Custom Time Range" if is_custom_range else time_range
+        self.pw_utils.select_drop_down_element(
+            CustomerAccountSelectors.SERVICE_TIME_RANGE_DROPDOWN,
+            CustomerAccountSelectors.SERVICE_FILTER_BTN_TEMPLATE.format(list_item_text),
+            element_role="option",
+        )
+        if is_custom_range:
+            self.page.locator(CustomerAccountSelectors.CUSTOM_TIME_RANGE_INPUT).fill(
+                time_range
+            )
+        self.page.locator(CustomerAccountSelectors.APPLY_FILTER_BTN).click()
         return self

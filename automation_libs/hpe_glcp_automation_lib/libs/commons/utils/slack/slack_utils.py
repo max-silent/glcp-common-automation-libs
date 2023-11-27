@@ -6,9 +6,7 @@ import os
 
 import requests
 
-from hpe_glcp_automation_lib.libs.commons.utils.testrail.testrail_utils import (
-    TestRailResult,
-)
+from hpe_glcp_automation_lib.libs.commons.utils.testrail.testrail import TestRailResult
 
 log = logging.getLogger(__name__)
 

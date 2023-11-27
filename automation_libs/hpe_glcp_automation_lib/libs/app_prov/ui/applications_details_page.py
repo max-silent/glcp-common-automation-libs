@@ -1,88 +1,74 @@
 import logging
 
-from playwright.sync_api import Page, expect
-
-from hpe_glcp_automation_lib.libs.app_prov.ui.installed_applications_page import (
-    InstalledApplications,
-)
-from hpe_glcp_automation_lib.libs.app_prov.ui.locators import AppsDetailsSelectors
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.services.ui.service_details_page import ServiceDetails
 
 log = logging.getLogger()
 
 
-class ApplicationsDetails(HeaderedPage):
+class ApplicationsDetails(ServiceDetails):
     """
-    Applications Details page object model
+    DEPRECATED! CONSIDER USING 'ServiceDetails()' INSTANTIATING INSTEAD OF 'ApplicationsDetails()'.
     """
 
-    def __init__(self, page: Page, cluster: str, app_uuid: str, region: str = None):
-        """
-         Initialize with page and cluster
-        :param page: Page
-        :param cluster: cluster under test url
-        """
-        log.info(f"Playwright: Initialize the application details page for '{app_uuid}'")
-        super().__init__(page, cluster)
-        if region:
-            _region = "-".join(region.lower().split())
-            self.url = f"{cluster}/applications/app-details/{app_uuid}/{_region}"
-        else:
-            self.url = f"{cluster}/applications/app-details/{app_uuid}"
-        self.app_uuid = app_uuid
-        self.region = region
+    def __init__(self, *args, **kwargs):
+        log.info(f"Playwright: Initialize application details page.")
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'ApplicationsDetails()' by 'ServiceDetails()'."
+        )
+
+        transformed_kwargs = dict()
+        transformed_kwargs["page"] = kwargs.get(
+            "page", args[0] if len(args) > 0 else None
+        )
+        transformed_kwargs["cluster"] = kwargs.get(
+            "cluster", args[1] if len(args) > 1 else None
+        )
+        transformed_kwargs["service_name"] = kwargs.get(
+            "service_name", args[2] if len(args) > 2 else None
+        )
+        if not all(transformed_kwargs.values()):
+            raise ValueError(
+                "Incorrect set of arguments to invoke constructor of parent class 'ServiceDetails'"
+            )
+        super().__init__(**transformed_kwargs)
 
     def setup_application(self, region: str):
+        """DEPRECATED! CONSIDER USING OF METHOD 'deploy_service' instead.
+        Deploy service at given region.
+
+        :param region: region.
+        :return: current instance of ServiceDetails page object.
         """
-         Install the application to the given region
-        :param region: region to deploy application
-        :return current instance of Install Applications page object.
-        """
-        log.info(f"Playwright: Install the application for the region: '{region}'")
-        self.page.locator(AppsDetailsSelectors.SETUP_APPLICATION_BTN).click()
-        self.page.wait_for_selector(AppsDetailsSelectors.ADD_APPLICATION_MODAL)
-        self.page.locator(AppsDetailsSelectors.DEPLOYMENT_REGION).click()
-        self.page.locator(
-            AppsDetailsSelectors.REGION_OPTION_TEMPLATE.format(region)
-        ).click()
-        self.page.locator(AppsDetailsSelectors.TERMS_CHECKBOX).click()
-        self.page.locator(AppsDetailsSelectors.DEPLOY_BTN).click()
-        return InstalledApplications(self.page, self.cluster, self.app_uuid)
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'ApplicationsDetails()' by 'ServiceDetails()'."
+        )
+        return self.deploy_service(region)
 
     def add_regions_to_installed_application(self, region: str):
-        """
+        """DEPRECATED! CONSIDER USING OF METHOD 'deploy_service' instead.
         Open an installed application
         :param : region to deploy application
         :return: current instance of My Applications page object
         """
-        log.info(f"Playwright: Add application deployment for region {region}")
-        self.page.locator(AppsDetailsSelectors.ADD_REGION_BTN).click()
-        self.page.wait_for_selector(AppsDetailsSelectors.ADD_APPLICATION_MODAL)
-        self.page.locator(AppsDetailsSelectors.DEPLOYMENT_REGION).click()
-        self.page.locator(
-            AppsDetailsSelectors.REGION_OPTION_TEMPLATE.format(region)
-        ).click()
-        self.page.locator(AppsDetailsSelectors.TERMS_CHECKBOX).click()
-        self.page.locator(AppsDetailsSelectors.DEPLOY_BTN).click()
-        self.page.wait_for_load_state("domcontentloaded")
-        return self
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'ApplicationsDetails()' by 'ServiceDetails()'."
+        )
+        return self.deploy_service(region)
 
     def should_have_setup_application(self):
-        """
+        """DEPRECATED! CONSIDER USING OF METHOD 'should_have_provision_button' instead.
         Check if set up application button
         """
-        log.info("Playwright: Checking the presence of the set up application button.")
-        expect(
-            self.page.locator(AppsDetailsSelectors.SETUP_APPLICATION_BTN)
-        ).to_be_visible()
-        return self
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'ApplicationsDetails()' by 'ServiceDetails()'."
+        )
+        return self.should_have_provision_button()
 
     def should_not_have_setup_application(self):
-        """
+        """DEPRECATED! CONSIDER USING OF METHOD 'should_not_have_provision_button' instead.
         Check if set up application button not present
         """
-        log.info("Playwright: Checking the absence of the set up application button.")
-        expect(
-            self.page.locator(AppsDetailsSelectors.SETUP_APPLICATION_BTN)
-        ).not_to_be_visible()
-        return self
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'ApplicationsDetails()' by 'ServiceDetails()'."
+        )
+        return self.should_not_have_provision_button()

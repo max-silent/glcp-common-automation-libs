@@ -1,20 +1,16 @@
 import logging
 
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 
 from hpe_glcp_automation_lib.libs.app_prov.ui.applications_details_page import (
     ApplicationsDetails,
 )
-from hpe_glcp_automation_lib.libs.app_prov.ui.locators import (
-    AppNavigationSelectors,
-    AvailableAppsSelectors,
-)
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.services.ui.service_catalog_page import ServiceCatalog
 
 log = logging.getLogger()
 
 
-class AvailableApplications(HeaderedPage):
+class AvailableApplications(ServiceCatalog):
     """
     Available Applications Page Object Model
     """
@@ -26,58 +22,60 @@ class AvailableApplications(HeaderedPage):
         :param cluster: cluster under test url
         """
         log.info("Playwright: Initialize available apps page.")
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'AvailableApplications()' by 'ServiceCatalog()'."
+        )
         super().__init__(page, cluster)
-        self.url = f"{cluster}/applications/available-apps"
 
     def wait_for_loaded_list(self):
-        """
+        """DEPRECATED! CONSIDER USING OF ServiceCatalog's 'wait_for_loaded_list()' instead.
          Wait for list of applications is not empty and loader spinner is not present on the page.
         :return: current instance of Available Applications page object.
         """
-        log.info("Playwright: wait for applications list is loaded.")
-        self.page.locator(AvailableAppsSelectors.LOADER_SPINNER).wait_for(state="hidden")
-        self.page.wait_for_selector(
-            AvailableAppsSelectors.APPLICATION_CARD_TEMPLATE,
-            state="visible",
-            strict=False,
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'AvailableApplications()' by 'ServiceCatalog()'."
         )
-        self.page.wait_for_load_state("domcontentloaded")
+        super().wait_for_loaded_list()
         return self
 
-    def open_view_details_on_application(self, app_uuid: str):
-        """
+    def open_view_details_on_application(self, service_name: str):
+        """DEPRECATED! CONSIDER USING OF ServiceCatalog's 'open_service()' instead.
         click on the view details to open the application.
-        :param app_uuid: uuid of the application
+        :param service_name: service name.
         :return instance of ApplicatonDetails.
         """
-        log.info(
-            "Playwright: views details done clickable action after application open."
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'AvailableApplications()' by 'ServiceCatalog()'."
         )
-        self.pw_utils.click_selector(
-            AvailableAppsSelectors.VIEW_DETAILS_BTN_TEMPLATE.format(app_uuid)
-        )
-        return ApplicationsDetails(self.page, self.cluster, app_uuid)
+        self.open_service(service_name)
+        return ApplicationsDetails(self.page, self.cluster, service_name)
 
-    def should_have_appplication(self, app_uuid: str):
+    def should_have_application(self, service_name: str):
+        """DEPRECATED! CONSIDER USING OF ServiceCatalog's 'should_have_service()' instead.
+         Check for the application existence.
+        :param service_name: service name.
+        :return: current instance of Available Applications page object.
         """
-         Check for the application existence
-        :param app_uuid: application uuid
-        :return: current instance of Available Applications page object
-        """
-        log.info(
-            f"Playwright: check the application existence with uuid '{app_uuid}' in My Applications page."
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'AvailableApplications()' by 'ServiceCatalog()'."
         )
-        self.pw_utils.save_screenshot(self.test_name)
-        expect(
-            self.page.locator(
-                AvailableAppsSelectors.APPLICATION_CARD_TEMPLATE.format(app_uuid)
-            )
-        ).to_be_visible()
+        log.error(
+            f"NOTE: use correct arguments of 'should_have_service()' (i.e. use service name instead of uuid)."
+        )
+        self.should_have_service(service_name)
         return self
 
+    def should_have_appplication(self, service_name: str):
+        """DEPRECATED! CONSIDER USING OF ServiceCatalog's 'should_have_service()' instead."""
+        return self.should_have_application(service_name)
+
     def open_my_applications(self):
+        """DEPRECATED!
+        CONSIDER USING OF ServiceCatalog's 'self.side_menu.navigate_to_my_services()' INSTEAD.
+
+        Navigate to My Application page.
         """
-        Navigate to My Applcation page.
-        """
-        log.info("Playwright: navigate to My Applications page")
-        self.page.wait_for_selector(AppNavigationSelectors.MY_APPS_BTN).click()
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'AvailableApplications()' by 'ServiceCatalog()'."
+        )
+        self.side_menu.navigate_to_my_services()

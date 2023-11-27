@@ -8,6 +8,7 @@ import time
 from playwright.sync_api import Page
 
 from hpe_glcp_automation_lib.libs.authn.ui.locators import ResetUserPasswordSelectors
+from hpe_glcp_automation_lib.libs.authn.ui.login_page import Login
 from hpe_glcp_automation_lib.libs.commons.ui.base_page import BasePage
 from hpe_glcp_automation_lib.libs.commons.utils.gmail.gmail_imap2 import GmailOps_okta
 
@@ -30,19 +31,16 @@ class ResetUserPwd(BasePage):
 
     def send_reset_password_link(self, username):
         """
+        *** NOTE *** this is a duplication of 'send_reset_password_email' from login_page.py and will be deleted.
         Sends reset password link to the username
 
         :param username: User's email
         """
-        self.page.goto(self.cluster)
-        self.page.locator(ResetUserPasswordSelectors.NEED_HELP).click()
-        self.page.locator(ResetUserPasswordSelectors.FORGOT_PASSWORD).click()
-        self.page.locator(ResetUserPasswordSelectors.ACCOUNT_RECOVERY_USERNAME).fill(
-            username
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'send_reset_password_link' by 'send_reset_password_email'."
         )
-        self.page.locator(ResetUserPasswordSelectors.REST_VIA_EMAIL).click()
-        self.pw_utils.save_screenshot(self.test_name)
-        log.info(f"Playwright: Reset link has been emailed to {username}")
+        login_page = Login(self.page, self.cluster).open()
+        login_page.send_reset_password_email(username)
 
     def reset_password(self, gmail_username, gmail_password, new_passwd):
         """
@@ -61,7 +59,7 @@ class ResetUserPwd(BasePage):
             gmail_username,
             gmail_password,
         )
-        if reset_link == None:
+        if not reset_link:
             raise Exception("Playwright: No Reset link found!")
         self.page.goto(reset_link)
         self.page.locator(ResetUserPasswordSelectors.NEW_PASSWD_PATH).fill(new_passwd)

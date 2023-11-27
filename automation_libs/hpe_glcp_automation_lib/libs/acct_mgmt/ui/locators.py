@@ -6,6 +6,7 @@ class ChooseAccountSelectors:
     CREATE_ACCT_BTN = '[data-testid="create-account-button"]'
     BACK_TO_SIGN_IN_BTN = '[data-testid="back-to-sign-in-btn"]'
     WELCOME_HEADER = "h1:text-is('Welcome to HPE GreenLake')"
+    WELCOME_SUBHEADER = '[data-testid="text-create-account-subheader"]'
     ACCOUNTS_COUNT = "[data-testid='text-customer-accounts-count']"
     ACCOUNT_TILES = "[data-testid='tile-action-btn']"
     PAGINATION_BAR = "[data-testid='pagination']"
@@ -100,6 +101,12 @@ class CustomerAccountSelectors:
     REMOVE_TENANT_APP_MODAL = '[data-testid="remove-tenant-application-modal"]'
     CANCEL_BUTTON = '[data-testid="cancel-btn"]'
     LAUNCH_WORKSPACE_BTN = '[data-testid="launch-account-btn"]'
+    CLEAR_FILTER_BTN = '[data-testid="text-clear-filters-anchor"]'
+    SERVICE_FILTER_DROPDOWN = '[data-testid="application-instance-input"]'
+    SERVICE_FILTER_BTN_TEMPLATE = '[role="listbox"] > button:text-is("{}")'
+    SERVICE_TIME_RANGE_DROPDOWN = '[data-testid="application-instance-time-input"]'
+    CUSTOM_TIME_RANGE_INPUT = '[data-testid="custom-time-range-input"]'
+    APPLY_FILTER_BTN = '[data-testid="submit-btn"]'
 
 
 class CustomerDetailSelectors:
@@ -157,6 +164,7 @@ class WorkspaceDetailSelectors:
     UPDATE_MSG = 'span:text("updated successfully.")'
     UPDATE_MSG_CLOSE_BTN = '[data-testid="notification-status-ok"] button'
     SECURITY_BTN = "[data-testid='menu-item-manage-mfa']"
+    BACK_TO_MANAGE_BUTTON = '[data-testid="back-btn"]'
 
 
 class AddCustomerSelectors:
@@ -200,12 +208,21 @@ class AccountTypeSelectors:
     """
 
     ELIGIBILITY_HEADER = "h3:text-is('Check Your Eligibility')"
-    CHECK_ELIGIBILITY_BUTTON = "data-testid=check-eligibility-button"
-    CONVERT_ACCT_BUTTON = "data-testid=convert-account-button"
-    CONFIRM_CONVERT_BUTTON = "data-testid=submit-btn"
-    FORBIDDEN_CONVERSION_MESSAGE = "data-testid=notification-message"
+    CHECK_ELIGIBILITY_BUTTON = "[data-testid='check-eligibility-button']"
+    CONVERT_ACCT_BUTTON = "[data-testid='convert-account-button']"
+    CONFIRM_CONVERT_BUTTON = "[data-testid='submit-btn']"
+    FORBIDDEN_CONVERSION_MESSAGE = "[data-testid='notification-message']"
     REMOVE_WORKSPACES_HEADER = "h3:text-is('Remove All Customer workspaces')"
-    REVIEW_CUSTOMER_WORKSPACES_BUTTON = "data-testid=remove-customer-account-button"
+    REVIEW_CUSTOMER_WORKSPACES_BUTTON = "[data-testid='remove-customer-account-button']"
+    CONVERT_ACC_BTN = "[data-testid='convert-account-button']"
+    SUBMIT_BTN = "[data-testid='submit-btn']"
+    MANAGE_WORKSPACE_TITLE = "[data-testid='heading-page-title']"
+    STEP_REMOVE_UNSUPPORTED_SERVICE_BUTTON = (
+        "[data-testid='review-unsupported-apps-button']"
+    )
+    REVIEW_CUST_WORKSPACES = "[data-testid='remove-customer-account-button']"
+    SDS_WS_TITLE = "[data-testid='heading-company-name']"
+    BACK_TO_MANAGE_BUTTON = '[data-testid="manage-account-btn"]'
 
 
 class CheckEligibilitySelectors:
@@ -224,13 +241,13 @@ class CheckEligibilitySelectors:
     MAIL_ID = "#input-text-email"
     SALES_REP_MAIL_ID = "#input-text-sales-rep-email"
     SUBMIT_BUTTON = "data-testid=button-next"
-    CONTINUE_BUTTON = "button:text-is('Continue')"
-    EXIT_BTN = '[data-testid="button-finish"]'
-    CANCEL_BTN = '[data-testid="button-header-cancel"]'
-    PROVIDE_WORKSPACE_DETAILS_BTN = '[data-testid="button-header-previous"]'
-    NO_CONTINUE_BTN = '[data-testid="button-cancel-continue"]'
-    YES_EXIT_BTN = '[data-testid="button-cancel-exit"]'
-    CONTACT_SUPPORT_BTN = '[data-testid="contact-support-btn"]'
+    EXIT_BTN = "[data-testid='button-finish']"
+    CANCEL_BTN = "[data-testid='button-header-cancel']"
+    PROVIDE_WORKSPACE_DETAILS_BTN = "[data-testid='button-header-previous']"
+    NO_CONTINUE_BTN = "[data-testid='button-cancel-continue']"
+    YES_EXIT_BTN = "[data-testid='button-cancel-exit']"
+    CONTACT_SUPPORT_BTN = "[data-testid='contact-support-btn']"
+    HEADING_STEP_TITLE = '[data-testid="heading-step-title"]'
 
 
 class UserProfileSelectors:
@@ -298,15 +315,16 @@ class SwitchAccountSelectors:
     ACCOUNT_TYPE_DROPDOWN = "data-testid=account-type-input"
     SORT_BY_DROPDOWN = "data-testid=sort-by-input"
     DROPDOWN_OPTS_TEMPLATE = "button:text-is('{}')"
+    RECENT_ACCOUNTS_COUNTER = "[data-testid='text-total-accounts']"
+    RECENT_ACCOUNT_CARDS = "[data-testid^='card']:has(button)"
     RECENT_ACCOUNT_NAME = (
-        "[data-testid^='card']:first-of-type [data-testid^='account-title']"
+        "[data-testid^='card']:first-of-type h2[data-testid^='heading-account-title']"
     )
     RECENT_ACCOUNT_LAUNCH = "[data-testid^='card']:first-of-type button"
     LIST_OF_ACCOUNTS_TITLES = "[data-testid='switch-account-subheader'] ~ div > div > \
               [data-testid^='card-'] [data-testid^='account-title']"
     LIST_OF_ACCOUNTS_CARDS = "[data-testid='switch-account-subheader'] \
                                 ~ div > div > [data-testid^='card-']"
-    TOTAL_COUNT_OF_ACCOUNTS = "[data-testid='text-total-accounts']"
     PAGINATION_BAR = "data-testid=pagination-switch-account"
     GO_TO_NEXT_PAGE = "button[aria-label='Go to next page']"
     GO_TO_PREVIOUS_PAGE = "button[aria-label='Go to previous page']"
@@ -330,20 +348,32 @@ class ManageMFASelectors:
     MFA_NOTIFICATION_CLOSE_BTN = "[data-testid='notification-status-ok'] button"
 
 
-class APISelectors:
-    CLIENT_NAMES = '[data-testid="heading-accordion-title"]'
+class ApiPageSelectors:
+    PAGE_TITLE = "[data-testid='api-page-header'] h1"
+    CLIENT_BTN_TEMPLATE = "button:has(>[data-testid$='-accordion-panel'] [data-testid='heading-accordion-title']:text-is('{}'))"
     CREATE_CREDENTIAL_BTN = "[data-testid='create-credentials-btn']"
-    CREATE_CREDENTIAL_FORM_BTN = "[data-testid='create-credential-form-btn']"
-    LIST_APPS = "[data-testid='create-credential-select-app']"
+    SERVICE_MANAGER_DROPDOWN = "[id='create-credential-select-app__input']"
     CREDENTIAL_NAME = "[data-testid='credential-name-input']"
+    CREATE_CREDENTIAL_FORM_BTN = "[data-testid='create-credential-form-btn']"
     CLIENT_ID = "[data-testid='client-id-copy-field-text-field-input']"
     CLIENT_SECRET = "[data-testid='client-secret-copy-field-text-field-input']"
-    CLOSE_MODAL_BTN = "[data-testid='create-credential-close-modal-btn']"
+    CLOSE_MODAL_BTN = "[data-testid$='-close-modal-btn']"
     API_CLIENT_ACTION_BTN = "[data-testid='api-client-action-btn']"
+    DELETE_CLIENT_BTN = "button:has-text('Delete Credentials')"
+    DELETE_CLIENT_CREDENTIAL_BTN = "[data-testid='delete-credential-btn']"
     GENERATE_ACCESS_TOKEN_BTN = "[data-testid='generate-access-token-btn']"
     CLIENT_SECRET_INPUT = "[data-testid='client-secret-input']"
     CREATE_ACCESS_TOKEN_BTN = "[data-testid='create-access-token-form-btn']"
     ACCESS_TOKEN = "[data-testid='access-token-text-field-input']"
-    GENERATE_TOKEN_CLOSE_MODAL_BTN = "[data-testid='generate-token-close-modal-btn']"
-    DELETE_CLIENT_BTN = "button:has-text('Delete Credentials')"
-    DELETE_CLIENT_CREDENTIAL_BTN = "[data-testid='delete-credential-btn']"
+
+
+class IpAccessRulesSelectors:
+    PAGE_TITLE = "[data-testid='heading-page-title']"
+
+
+class UsageReportingSelectors:
+    PAGE_TITLE = "[data-testid='heading-page-title']"
+
+
+class OrderHistorySelectors:
+    PAGE_TITLE = '[data-testid="order-history-page-header"]'

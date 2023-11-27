@@ -14,7 +14,6 @@ if os.getenv("POD_NAMESPACE") is not None:
 
     import M2Crypto
     import M2Crypto.BIO
-    import M2Crypto.RSA
 log = logging.getLogger(__name__)
 
 

@@ -36,11 +36,11 @@ class Enroll(BasePage):
         :return: Enroll page object instance
         """
         log.info("Setting Up OKTA")
-        self.pw_utils.click_selector(EnrollSelectors.OKTA_SETUP_BTN)
-        self.pw_utils.click_selector(EnrollSelectors.ANDROID_RADIO_BTN)
-        self.pw_utils.click_selector(EnrollSelectors.NEXT_BTN)
-        self.pw_utils.click_selector(EnrollSelectors.CANT_SCAN)
-        self.pw_utils.click_selector(EnrollSelectors.ACTIVATION_TYPE_DROPDOWN)
+        self.page.click(EnrollSelectors.OKTA_SETUP_BTN)
+        self.page.click(EnrollSelectors.ANDROID_RADIO_BTN)
+        self.page.click(EnrollSelectors.NEXT_BTN)
+        self.page.click(EnrollSelectors.CANT_SCAN)
+        self.page.click(EnrollSelectors.ACTIVATION_TYPE_DROPDOWN)
         self.page.locator(EnrollSelectors.ACTIVATION_TYPE_OPTION).nth(1).click()
         self.page.wait_for_load_state("networkidle")
         self.okta_device_id = self.page.locator(
@@ -49,9 +49,9 @@ class Enroll(BasePage):
         log.info(f"Device secret id : {self.okta_device_id}")
         self.pw_utils.save_screenshot(self.test_name)
         otp = self.get_otp(self.okta_device_id)
-        self.pw_utils.click_selector(EnrollSelectors.OKTA_PUSH_NEXT_BTN)
+        self.page.click(EnrollSelectors.OKTA_PUSH_NEXT_BTN)
         self.page.locator(EnrollSelectors.PASSCODE_INPUT_FIELD).fill(otp)
-        self.pw_utils.click_selector(EnrollSelectors.VERIFY_BTN)
+        self.page.click(EnrollSelectors.VERIFY_BTN)
         return self
 
     def setup_google_auth(self):
@@ -61,19 +61,19 @@ class Enroll(BasePage):
         :return: Enroll page object instance
         """
         log.info("Setting Up Google Authenticator")
-        self.pw_utils.click_selector(EnrollSelectors.GOOGLE_AUTH_SETUP_BTN)
-        self.pw_utils.click_selector(EnrollSelectors.ANDROID_RADIO_BTN)
-        self.pw_utils.click_selector(EnrollSelectors.NEXT_BTN)
-        self.pw_utils.click_selector(EnrollSelectors.CANT_SCAN)
+        self.page.click(EnrollSelectors.GOOGLE_AUTH_SETUP_BTN)
+        self.page.click(EnrollSelectors.ANDROID_RADIO_BTN)
+        self.page.click(EnrollSelectors.NEXT_BTN)
+        self.page.click(EnrollSelectors.CANT_SCAN)
         self.gauth_device_id = self.page.locator(
             EnrollSelectors.SHARED_SECRET_FIELD
         ).input_value()
         log.info(f"Device secret id : {self.gauth_device_id}")
         self.pw_utils.save_screenshot(self.test_name)
         otp = self.get_otp(self.gauth_device_id)
-        self.pw_utils.click_selector(EnrollSelectors.NEXT_BTN)
+        self.page.click(EnrollSelectors.NEXT_BTN)
         self.page.locator(EnrollSelectors.PASSCODE_INPUT_FIELD).fill(otp)
-        self.pw_utils.click_selector(EnrollSelectors.VERIFY_BTN)
+        self.page.click(EnrollSelectors.VERIFY_BTN)
         return self
 
     def get_otp(self, device_id):

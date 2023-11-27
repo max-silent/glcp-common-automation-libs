@@ -23,12 +23,18 @@ class LoginPagePaths:
 
 class Login(object):
     def __init__(self, username, password):
+        """
+        This module is DEPRECATED and will be removed from the repo. Please use Login() from login_page.py instead.
+        """
         self.selectors = LoginPagePaths()
         self.username = username
         self.password = password
         log.info(f"Initialize {__name__}")
 
     def login_acct(self, page, account_name=None):
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'login_to_homepage' by 'login_page'."
+        )
         try:
             page.fill(self.selectors.email_id_path, self.username)
             page.click(self.selectors.next_btn_path)
@@ -47,6 +53,9 @@ class Login(object):
             return False
 
     def select_acct(self, page, account_name):
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'login_to_homepage' by 'login_page'."
+        )
         try:
             page.wait_for_selector(self.selectors.account_search_box_xpath)
             page.locator(self.selectors.account_search_box_xpath).fill(
@@ -61,6 +70,9 @@ class Login(object):
             return False
 
     def go_to_home(self, page, login_url, account_name):
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'login_to_homepage' by 'login_page'."
+        )
         try:
             page.goto(login_url)
             do_login = self.login_acct(page, account_name)

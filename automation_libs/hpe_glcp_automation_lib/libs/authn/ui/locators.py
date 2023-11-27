@@ -19,16 +19,17 @@ class LoginPageSelectors:
     OKTA_NEXT_BTN = "input[value='Next']"
     OKTA_PASSWORD_SELECT = "div[data-se='okta_password']"
     OKTA_SIGN_IN_BTN = "input[value='Sign in']"
-    OKTA_FORM_TITLE = 'h2:has-text("Verify with Google Authenticator")'
+    OKTA_FORM_TITLE = "h2:has-text('Verify with Google Authenticator')"
     VERIFY_BUTTON = "input[value='Verify']"
     REMEMBER_ME = '[data-se-for-name="remember"]'
+    UNABLE_TO_SIGNIN = "p:text-is('Unable to sign in')"
 
 
 class ResetUserPasswordSelectors:
     ACCOUNT_RECOVERY_USERNAME = "input[id='account-recovery-username']"
-    NEED_HELP = '[data-se="needhelp"]'
-    FORGOT_PASSWORD = '[data-se="forgot-password"]'
-    REST_VIA_EMAIL = '[data-se="email-button"]'
+    NEED_HELP = "[data-se='needhelp']"
+    FORGOT_PASSWORD = "[data-se='forgot-password']"
+    REST_VIA_EMAIL = "[data-se='email-button']"
     NEW_PASSWD_PATH = "input[name='newPassword']"
     REPEAT_PASSWD_PATH = "input[name='confirmPassword']"
     RESET_PASSWD_BUTTON = "input[value='Reset Password']"
@@ -36,7 +37,7 @@ class ResetUserPasswordSelectors:
 
 class AuthenticationPageSelectors:
     ADD_SAML_CONNECTION_BTN = (
-        '[data-testid="set-saml-connection"], [data-testid="set-samlsso-connection"]'
+        "[data-testid='set-saml-connection'], [data-testid='set-samlsso-connection']"
     )
     DOMAIN_NAME_INPUT = "data-testid=domain-name-input"
     CONTINUE_BTN = "data-testid=continue-btn"
@@ -74,6 +75,7 @@ class AuthenticationPageSelectors:
     APP_ID_VALUE = "[data-testid=\"table\"] > tbody > tr:has(span:text-is('{}'))"
     CLOSE_BTN = '[data-testid="close-btn"]'
     DOWNLOAD_METADATA_FILE = '[data-testid="download-metadata-button"]'
+    PAGE_TITLE = "[data-testid='auth-header']"
 
 
 class EnrollSelectors:

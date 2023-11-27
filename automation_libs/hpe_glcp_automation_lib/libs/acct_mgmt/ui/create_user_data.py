@@ -63,7 +63,7 @@ class CheckEligibilityData:
 @dataclass
 class UserPreferencesData:
     """
-    Userpreference default options
+    User preference default options
     """
 
     language: str = "English"

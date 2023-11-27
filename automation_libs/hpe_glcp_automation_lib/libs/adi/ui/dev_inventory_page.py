@@ -8,14 +8,17 @@ from playwright.sync_api import Page, expect
 from hpe_glcp_automation_lib.libs.adi.ui.add_devices_page import AddDevices
 from hpe_glcp_automation_lib.libs.adi.ui.device_details_page import DeviceDetails
 from hpe_glcp_automation_lib.libs.adi.ui.locators import DevicesInventorySelectors
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.side_menu_devices_navigable_page import (
+    SideMenuNavigablePage,
+)
 from hpe_glcp_automation_lib.libs.commons.utils.pwright.pwright_utils import TableUtils
 from hpe_glcp_automation_lib.libs.sm.ui.apply_subscription_page import ApplySubscription
 
 log = logging.getLogger(__name__)
 
 
-class DevicesInventory(HeaderedPage):
+class DevicesInventory(HeaderedPage, SideMenuNavigablePage):
     """
     Devices Inventory page object model class.
     """
@@ -70,7 +73,7 @@ class DevicesInventory(HeaderedPage):
         :return: instance of AddDevices page object.
         """
         log.info("Playwright: click 'Add Devices' button.")
-        (self.page.locator(DevicesInventorySelectors.ADD_DEVICE_BUTTON)).click()
+        self.page.locator(DevicesInventorySelectors.ADD_DEVICE_BUTTON).click()
         return AddDevices(self.page, self.cluster)
 
     def add_filter_by_applications(self, applications: list):
@@ -134,7 +137,7 @@ class DevicesInventory(HeaderedPage):
 
         :return: current instance of Devices Inventory page object.
         """
-        log.info(f"Playwright: clear value in search field of audit logs.")
+        log.info(f"Playwright: clear value in search field of Devices Inventory.")
         self.page.locator(DevicesInventorySelectors.CLEAR_FILTERS_BUTTON).click()
         return self
 
@@ -243,7 +246,7 @@ class DevicesInventory(HeaderedPage):
         self.pw_utils.wait_for_selector(
             DevicesInventorySelectors.TABLE_ROWS_CHECK_ICONS,
             state="hidden",
-            timeout=5000,
+            timeout=10000,
             strict=False,
         )
         return self
@@ -328,6 +331,29 @@ class DevicesInventory(HeaderedPage):
             timeout=5000,
             strict=False,
         )
+        return self
+
+    def click_assigned_subscribed_devices(self):
+        """Click Assigned & Subscribed card.
+
+        :return: current instance of Devices Inventory page object.
+        """
+        log.info("Playwright: click 'Assigned & Subscribed' card.")
+        self.page.locator(DevicesInventorySelectors.CARD_ASSIGNED_LICENSED).click()
+        return self
+
+    def select_rows_by_indices(self, indices: list):
+        """Select the checkboxes for each row listed in row_numbers.
+        :param indices: row numbers (starting from 1) to be selected.
+        :return: self reference
+        """
+        for row_index in indices:
+            sn_row_selector = (
+                DevicesInventorySelectors.TABLE_ROWS_CHECK_ICONS_BY_ROW.format(
+                    row_index=row_index
+                )
+            )
+            self.page.locator(sn_row_selector).check()
         return self
 
     def should_action_be_unavailable(self, text):
@@ -490,16 +516,37 @@ class DevicesInventory(HeaderedPage):
         ).to_be_visible()
         return self
 
-    def should_have_text_in_title(self, text="Inventory"):
+    def should_not_have_add_device_btn(self):
+        """
+        check the absence of add device button
+        """
+        log.info("Playwright: Checking the absence of add device button")
+        expect(
+            self.page.locator(DevicesInventorySelectors.ADD_DEVICE_BUTTON)
+        ).not_to_be_visible()
+        return self
+
+    def should_have_text_in_title(self, text):
         """
         Verify device inventory title
-        param:(str) optional
+        param text: text to verify in the title
         return:(object) self reference
         """
         self.wait_for_loaded_state()
         expect(
             self.page.locator(DevicesInventorySelectors.DEVICE_INVENTORY_TITLE)
         ).to_have_text(text)
+        return self
+
+    def should_rows_count_match_total_devices(self):
+        """Check that count of displayed table rows is the same as total devices count.
+
+        :return: current instance of Devices Inventory page object.
+        """
+        count = self.page.locator(
+            DevicesInventorySelectors.TOTAL_DEVICES_COUNT
+        ).text_content()
+        self.should_have_rows_count(int(count))
         return self
 
     def _select_checkbox_items(self, field_label, item_labels):
@@ -517,7 +564,7 @@ class DevicesInventory(HeaderedPage):
                 )
             )
             if item_locator.locator("svg[viewBox]").is_hidden():
-                item_locator.click()
+                item_locator.check()
             else:
                 log.warning(
                     f"Filter checkbox '{item}' at '{field_label}' field was set already."
@@ -552,15 +599,4 @@ class DevicesInventory(HeaderedPage):
         self.page.locator(
             DevicesInventorySelectors.ACTIONS_TEMPLATE.format(item_text)
         ).click()
-        return self
-
-    def should_not_have_add_device_btn(self):
-        """
-        check the absence of add device button
-        :return: current instance of Devices Inventory page object.
-        """
-        log.info("Playwright: Checking the absence of add device button")
-        expect(
-            self.page.locator(DevicesInventorySelectors.ADD_DEVICE_BUTTON)
-        ).not_to_be_visible()
         return self

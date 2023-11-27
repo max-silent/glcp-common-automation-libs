@@ -44,7 +44,7 @@ class UserProfile(BasePage):
     def update_password(self, passwd_data: PasswordData = PasswordData):
         """
         Update user password
-        param user: password edit for existing customer
+        param user_data: password edit for existing customer
         e.g. current_password, new_password, etc.
         """
         log.info("Playwright: Changing the password")
@@ -65,7 +65,7 @@ class UserProfile(BasePage):
         """
          Updates the personal information
 
-        :param data: e.g. email, password, address, phone etc.
+        :param user_data: e.g. email, password, address, phone etc.
         """
         log.info("Updating the user personal information")
         self.pw_utils.click_selector(UserProfileSelectors.PERSONAL_EDIT_INFO_BTN)
@@ -96,7 +96,7 @@ class UserProfile(BasePage):
 
     def toggle_mfa(self):
         """
-        Enable/Disable Multifator Authentication at user level
+        Enable/Disable Multi-factor Authentication at user level
         :return: Userprofile page Object instance
         """
         log.info("Toggling MFA")

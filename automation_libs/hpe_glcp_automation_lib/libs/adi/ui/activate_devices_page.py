@@ -7,13 +7,15 @@ from pathlib import Path
 
 from playwright.sync_api import Page, expect
 
+from hpe_glcp_automation_lib.libs.adi.ui.activate_device_details_page import (
+    ActivateDeviceDetails,
+)
 from hpe_glcp_automation_lib.libs.adi.ui.activate_folders_page import ActivateFolders
-from hpe_glcp_automation_lib.libs.adi.ui.device_history_page import DeviceHistory
 from hpe_glcp_automation_lib.libs.adi.ui.locators import ActivateDevicesSelectors
-from hpe_glcp_automation_lib.libs.adi.ui.side_menu_navigable_page import (
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.side_menu_activate_navigable_page import (
     SideMenuNavigablePage,
 )
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
 from hpe_glcp_automation_lib.libs.commons.utils.pwright.pwright_utils import (
     PwrightUtils,
     TableUtils,
@@ -64,6 +66,19 @@ class ActivateDevices(HeaderedPage, SideMenuNavigablePage):
         :return: instance of Device History page object.
         """
         log.info("Playwright: Open device history page with particular data given")
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'open_device_history()' by 'open_device_details()'."
+        )
+        return self.open_device_details(device_identifier, column_name)
+
+    def open_device_details(self, device_identifier, column_name="Serial Number"):
+        """Open device details for particular device from the table.
+
+        :param device_identifier: Device info to search for (e.g. serial number, mac etc.)
+        :param column_name: Name of column, where search_info will be shown. By default, its serial number
+        :return: instance of Activate Device Details page object.
+        """
+        log.info("Playwright: Open device details page with particular data given")
         self.wait_for_loaded_table()
         self.page.locator(ActivateDevicesSelectors.SEARCH_FIELD).fill(device_identifier)
         self.wait_for_loaded_table()
@@ -73,7 +88,7 @@ class ActivateDevices(HeaderedPage, SideMenuNavigablePage):
         self.page.locator(
             ActivateDevicesSelectors.TABLE_ROW_TEMPLATE.format(matching_row_index[0])
         ).click()
-        return DeviceHistory(self.page, self.cluster, device_identifier)
+        return ActivateDeviceDetails(self.page, self.cluster, device_identifier)
 
     def download_allowed_list_cli(self):
         """

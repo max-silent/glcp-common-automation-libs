@@ -9,10 +9,10 @@ from hpe_glcp_automation_lib.libs.adi.ui.activate_folder_details_page import (
     ActivateFolderDetails,
 )
 from hpe_glcp_automation_lib.libs.adi.ui.locators import ActivateFoldersSelectors
-from hpe_glcp_automation_lib.libs.adi.ui.side_menu_navigable_page import (
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.side_menu_activate_navigable_page import (
     SideMenuNavigablePage,
 )
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
 from hpe_glcp_automation_lib.libs.commons.utils.pwright.pwright_utils import TableUtils
 
 log = logging.getLogger(__name__)
@@ -170,5 +170,9 @@ class ActivateFolders(HeaderedPage, SideMenuNavigablePage):
         :return: current instance of Activate Folders page object.
         """
         log.info("Playwright: check that folder is not in the table.")
+        log.error(
+            f"NOTE: PLEASE REPLACE CALL OF DEPRECATED 'should_not_have_folder_in_the_table()' "
+            f"by 'should_have_rows_count(0)'."
+        )
         self.should_have_rows_count(0)
         return self

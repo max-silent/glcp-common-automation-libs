@@ -7,6 +7,12 @@ import logging
 from hpe_glcp_automation_lib.libs.acct_mgmt.ui.create_account_page import CreateAcctPage
 from hpe_glcp_automation_lib.libs.acct_mgmt.ui.create_user_data import CreateUserData
 from hpe_glcp_automation_lib.libs.acct_mgmt.ui.create_user_page import CreateUserPage
+from hpe_glcp_automation_lib.libs.acct_mgmt.ui.customer_account_page import (
+    CustomerAccount,
+)
+from hpe_glcp_automation_lib.libs.acct_mgmt.ui.customer_details_page import (
+    CustomerDetails,
+)
 from hpe_glcp_automation_lib.libs.commons.ui.manage_account_page import ManageAccount
 from hpe_glcp_automation_lib.libs.commons.utils.gmail.gmail_imap2 import GmailOps_okta
 from hpe_glcp_automation_lib.libs.commons.utils.pwright.pwright_utils import PwrightUtils
@@ -69,3 +75,33 @@ class HlpCreateUserCreateAcct:
             return res_setup_info
         else:
             raise Exception("FAIL: first account is not created successfully")
+
+
+class HlpOpenCustomerDetails:
+    def __init__(self):
+        log.info("Opening Customer Details page")
+
+    @staticmethod
+    def open_customer_details(page, hostname, customer_name):
+        """
+        Load the details for the specified customer
+
+        :param page: Playwright Page object
+        :param hostname: cluster under test
+        :param customer_name: name of the customer whose details to be opened.
+        :return: instance of Customer details page object.
+        """
+        customer_accounts = (
+            CustomerAccount(page, hostname)
+            .load_customer(customer_name)
+            .wait_for_loaded_state()
+        )
+        customer_accounts.nav_bar.navigate_to_manage()
+        manage_account_page = ManageAccount(page, hostname)
+        pcid = manage_account_page.get_pcid()
+        manage_account_page.nav_bar.navigate_to_dashboard()
+        customer_accounts.wait_for_loaded_state().open_return_msp_account().wait_for_loaded_state().nav_bar.navigate_to_customers()
+        customer_accounts.wait_for_loaded_state()
+        customer_accounts.search_customer(customer_name)
+        customer_accounts.open_customer_details_by_pcid(customer_name, pcid)
+        return CustomerDetails(page, hostname, pcid)

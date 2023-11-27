@@ -101,9 +101,11 @@ class NewDeviceOrder:
         )
 
     def create_manufacturing(self, part, part_category=None, baas=False, MinParams=False):
-        """
-        Create manufacturing payload and make manufacture call
-        :param part: Device part number
+        """Create manufacturing payload and make manufacture call.
+
+        :param part: Device part number.
+        :param part_category: Device part category.
+        :param baas: is it BaaS device or not.
         :return: serial number, macaddress
         """
         log.info(
@@ -963,10 +965,6 @@ class NewDeviceOrder:
                 else:
                     time.sleep(5)
                     report = self.order.get_oaas_report(res["report_location"])
-            return None
-
-        except Exception as e:
-            log.error("Failed to create Oaas {}".format(e))
             return None
 
         except Exception as e:

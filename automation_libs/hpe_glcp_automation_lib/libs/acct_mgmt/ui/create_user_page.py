@@ -72,5 +72,5 @@ class CreateUserPage(BasePage):
         Navigate to cluster url
         """
         self.page.goto(self.cluster)
-        self.page.wait_for_selector(CreateUserSelectors.SIGNUP_TXT).click()
+        self.page.locator(CreateUserSelectors.SIGNUP_TXT).click()
         return self

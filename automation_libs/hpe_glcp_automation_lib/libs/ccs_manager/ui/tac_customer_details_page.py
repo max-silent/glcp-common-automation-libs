@@ -14,7 +14,7 @@ from hpe_glcp_automation_lib.libs.ccs_manager.ui.tac_device_details_page import 
 from hpe_glcp_automation_lib.libs.ccs_manager.ui.tac_folder_details_page import (
     TacFolderDetails,
 )
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
 from hpe_glcp_automation_lib.libs.commons.utils.pwright.pwright_utils import TableUtils
 
 log = logging.getLogger(__name__)

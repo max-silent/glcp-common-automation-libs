@@ -7,7 +7,7 @@ from playwright.sync_api import Page, expect
 
 from hpe_glcp_automation_lib.libs.authz.ui.locators import RolesSelectors
 from hpe_glcp_automation_lib.libs.authz.ui.role_details_page import RoleDetails
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
 from hpe_glcp_automation_lib.libs.commons.utils.pwright.pwright_utils import TableUtils
 
 log = logging.getLogger(__name__)
@@ -90,7 +90,8 @@ class Roles(HeaderedPage):
         Create custom role
 
         :param role_name: custom role name
-        :param role_name: resource name for adding permissions
+        :param app_name: application name
+        :param resource_name: resource name for adding permissions
         :param resource_opt: resource options under a particular resource (optional)
         :return: current instance of roles page object.
         """
@@ -142,6 +143,53 @@ class Roles(HeaderedPage):
         self.page.wait_for_selector(RolesSelectors.OK_STATUS).click()
         self.pw_utils.save_screenshot(self.test_name)
         self.page.locator(RolesSelectors.OK_STATUS_CLOSE_BTN).click()
+        return self
+
+    def duplicate_custom_role(self, original_role_name, duplicate_role_name, app_name):
+        """
+        Duplicate custom role
+
+        :param original_role_name: custom role name that you want to duplicate
+        :param duplicate_role_name: name of new duplicated role
+        :param app_name: application name
+
+        :return: current instance of roles page object.
+        """
+        self.page.locator(RolesSelectors.CREATE_ROLE_BUTTON).click()
+        self.page.locator(RolesSelectors.DUPLICATE_EXISTING_ROLE_RADIO_BTN).click()
+        self.pw_utils.select_drop_down_element(
+            RolesSelectors.APPLICATION_DROPDOWN,
+            app_name,
+            "option",
+        )
+        self.pw_utils.select_drop_down_element(
+            RolesSelectors.ROLES_DROPDOWN,
+            original_role_name,
+            "option",
+        )
+        self.page.locator(RolesSelectors.CREATE_ROLE).click()
+        self.page.locator(RolesSelectors.ROLE_NAME_INPUT).fill(duplicate_role_name)
+        self.page.locator(RolesSelectors.NEXT_BUTTON).click()
+        self.page.locator(RolesSelectors.NEXT_BUTTON).click()
+        self.page.locator(RolesSelectors.FINISH_BUTTON).click()
+        self.wait_for_loaded_table()
+        return self
+
+    def should_not_have_create_role_btn(self):
+        """
+        Check absence of create role button
+        :return: current instance of roles page object.
+        """
+        log.info("Playwright: checking the absence of create role button")
+        expect(self.page.locator(RolesSelectors.CREATE_ROLE_BUTTON)).not_to_be_visible()
+        return self
+
+    def should_have_create_role_btn(self):
+        """
+        Checking the presence of create role button
+        """
+        log.info("Playwright: checking the presence of create role button")
+        expect(self.page.locator(RolesSelectors.CREATE_ROLE_BUTTON)).to_be_visible()
         return self
 
     def should_have_search_field(self):
@@ -224,4 +272,28 @@ class Roles(HeaderedPage):
         log.info(f"Playwright: check that title has matched text '{text}' in roles page.")
         self.pw_utils.save_screenshot(self.test_name)
         expect(self.page.locator(RolesSelectors.HEADING_PAGE_TITLE)).to_have_text(text)
+        return self
+
+    def should_not_have_delete_role_action(self, role_name):
+        """
+        Check absence of delete role action
+        :param role_name: name of role to check for absence delete role action
+        :return: current instance of roles page object.
+        """
+        log.info("Playwright: checking the absence of delete role option")
+        self.search_for_text(role_name)
+        self.page.locator(RolesSelectors.ROLE_ACTION_BUTTON).click()
+        expect(self.page.locator(RolesSelectors.DELETE_ACTION)).not_to_be_visible()
+        return self
+
+    def should_not_have_duplicate_role_action(self, role_name):
+        """
+        Check absence of duplicate role action
+        :param role_name: name of role to check for absence of duplicate role action
+        :return: current instance of roles page object.
+        """
+        log.info("Playwright: checking the absence of duplicate role option")
+        self.search_for_text(role_name)
+        self.page.locator(RolesSelectors.ROLE_ACTION_BUTTON).click()
+        expect(self.page.locator(RolesSelectors.DUPLICATE_ACTION)).not_to_be_visible()
         return self

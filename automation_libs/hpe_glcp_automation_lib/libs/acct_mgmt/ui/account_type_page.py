@@ -3,14 +3,14 @@ This file holds functions for Account type page
 """
 import logging
 
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from hpe_glcp_automation_lib.libs.acct_mgmt.ui.check_eligibility_page import (
     CheckEligibility,
 )
 from hpe_glcp_automation_lib.libs.acct_mgmt.ui.locators import AccountTypeSelectors
 from hpe_glcp_automation_lib.libs.authn.ui.login_page import Login
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
 
 log = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class AccountType(HeaderedPage):
         Opens the Check Eligibility page
         :return: Instance of Check Eligibility page
         """
-        self.page.wait_for_selector(AccountTypeSelectors.CHECK_ELIGIBILITY_BUTTON).click()
+        self.page.locator(AccountTypeSelectors.CHECK_ELIGIBILITY_BUTTON).click()
         return CheckEligibility(self.page, self.cluster)
 
     def convert_account_type(self, to_msp=False):
@@ -64,3 +64,51 @@ class AccountType(HeaderedPage):
         self.page.locator(AccountTypeSelectors.CONFIRM_CONVERT_BUTTON).click()
 
         return Login(self.page, self.cluster)
+
+    def go_back_to_manage_workspace(self):
+        """
+        Navigate back to manage account page
+        """
+        log.info(f"Playwright: Navigating to manage account page")
+        self.page.click(AccountTypeSelectors.BACK_TO_MANAGE_BUTTON)
+        # Note: page object cannot be returned when navigating to the previous pages due to the circular import
+
+    def should_have_text_in_title(self, text):
+        """
+        Check that expected text matches with the heading page title.
+        :param text: expected text to match with the text in title.
+        :return: current instance of  Account Type page object.
+        """
+        log.info(
+            f"Playwright: check that title has matched text '{text}' in Account Type page."
+        )
+        self.pw_utils.save_screenshot(self.test_name)
+        expect(
+            self.page.locator(AccountTypeSelectors.MANAGE_WORKSPACE_TITLE)
+        ).to_have_text(text)
+        return self
+
+    def should_have_remove_unsupported_service_button_error_msg(self):
+        """
+        Verify account_type.step_remove_unsupported_service_button_text on account-type-overview page.
+        :return: current instance of Account Type page object.
+        """
+        log.info(
+            "Playwright: check that account_type.step_remove_unsupported_service_button message is visible at "
+            "Account Type page."
+        )
+        expect(
+            self.page.locator(AccountTypeSelectors.STEP_REMOVE_UNSUPPORTED_SERVICE_BUTTON)
+        ).to_be_visible()
+        return self
+
+    def should_have_review_customer_workspaces_button(self):
+        """
+        Check that Review Workspace button is present at the page.
+        :return: current instance of Account Type page object.
+        """
+        log.info("Playwright: Verifying Review Workspace button on Account type page.")
+        expect(
+            self.page.locator(AccountTypeSelectors.REVIEW_CUST_WORKSPACES)
+        ).to_be_visible()
+        return self

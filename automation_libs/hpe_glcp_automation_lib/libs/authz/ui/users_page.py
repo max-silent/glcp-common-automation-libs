@@ -6,7 +6,8 @@ import logging
 from playwright.sync_api import Page, expect
 
 from hpe_glcp_automation_lib.libs.authz.ui.locators import UsersSelectors
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.authz.ui.user_detail_page import UsersDetail
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
 from hpe_glcp_automation_lib.libs.commons.utils.pwright.pwright_utils import TableUtils
 
 log = logging.getLogger(__name__)
@@ -60,9 +61,20 @@ class Users(HeaderedPage):
         """
         Return to the previous page.
         """
-        log.info(f"Playwright: navigate back to identity and access page from users.")
+        log.info("Playwright: navigate back to identity and access page from users.")
         self.page.locator(UsersSelectors.BACK_BUTTON).click()
         # Note: page object cannot be returned when navigating to the previous pages due to the circular import
+
+    def navigate_to_user_detail(self, user_email):
+        """Navigated to User Detail Page
+
+        :param user_email: user's email.
+        return: new instance of UsersDetail page object.
+        """
+        self.search_for_text(user_email)
+        self.wait_for_loaded_table()
+        self.page.locator(UsersSelectors.TABLE_ROW_TEMPLATE.format(1)).click()
+        return UsersDetail(self.page, self.cluster, user_email)
 
     def invite_user(self, user_email, role: str = "Observer"):
         """
@@ -124,9 +136,10 @@ class Users(HeaderedPage):
         """
         log.info(f"Playwright: Assign {role_name} role to {user_email}.")
         self.search_for_text(user_email)
-        self.page.get_by_text(user_email).first.is_enabled()
-        self.page.get_by_text(user_email).first.click()
-        self.page.locator(UsersSelectors.ASSIGN_ROLE_BUTTON).click()
+        self.page.locator(
+            UsersSelectors.TABLE_ACTION_BTN_TEMPLATE.format(user_email)
+        ).click()
+        self.page.locator(UsersSelectors.ASSIGN_BTN).click()
         self.pw_utils.select_drop_down_element(
             UsersSelectors.APPLICATIONS_SELECT_DROPDOWN,
             app_name,
@@ -134,59 +147,54 @@ class Users(HeaderedPage):
             exact_match=True,
         )
         self.page.locator(UsersSelectors.ROLES_DROPDOWN).click()
+        self.page.get_by_role("searchbox").type(role_name, delay=100)
         self.page.locator(
             UsersSelectors.ROLES_DROPDOWN_OPT_TEMPLATE.format(role_name)
         ).click()
 
         if access_rule:
             self.pw_utils.select_drop_down_element(
-                UsersSelectors.ACCESS_RULE_DROPDOWN,
-                access_rule,
-                "option",
+                UsersSelectors.ACCESS_RULE_DROPDOWN, access_rule, "option"
             )
 
-        if limit_resource_access and rrp_name:
+        if limit_resource_access:
             self.page.locator(UsersSelectors.RESOURCE_POLICY_TOGGLE).click()
             self.page.locator(UsersSelectors.RESOURCE_POLICY_DROPDOWN).click()
-            if isinstance(rrp_name, str):
-                self.page.get_by_role(
-                    "option", name=f"{rrp_name} not selected", exact=True
-                ).click()
-            elif isinstance(rrp_name, list):
-                for rrp in rrp_name:
-                    self.page.get_by_role(
-                        "option", name=f"{rrp} not selected", exact=True
-                    ).click()
+            self.page.locator(
+                UsersSelectors.RESOURCE_POLICY_OPT_TEMPLATE.format(rrp_name)
+            ).click()
             self.page.locator(UsersSelectors.RESOURCE_POLICY_DROPDOWN).click()
-        self.page.locator(UsersSelectors.ASSIGN_ROLE_BUTTON).last.click()
+        self.page.locator(UsersSelectors.POPUP_ASSIGN_ROLE_BUTTON).click()
         self.page.locator(UsersSelectors.CHANGE_ROLE_BUTTON).click()
+        self.page.wait_for_selector(UsersSelectors.ASSIGNED_ROLE_NOTIFICATION)
         self.page.wait_for_load_state("domcontentloaded")
         self.pw_utils.save_screenshot(self.test_name)
         return self
 
-    def unassign_role(self, user_email, app_name):
+    def resend_email_invite(self, user_email):
         """
-        Unassign role to users with application access
+        Resend Email Invite to the user from the users page
 
-        :param user_email: user email
-        :param app_name: application name with which role is assigned
+        :param user_email: user email for which email invite needs to be resend
         :return: current instance of users page object
         """
-        log.info(f"Playwright: Unassign {app_name} role for {user_email}.")
+        log.info(f"Playwright: Resend email invite {user_email} user.")
         self.search_for_text(user_email)
-        self.page.get_by_text(user_email).first.is_enabled()
-        self.page.get_by_text(user_email).first.click()
-        self.page.wait_for_selector(
-            UsersSelectors.TABLE_ACTION_BTN_TEMPLATE.format(app_name)
-        )
         self.page.locator(
-            UsersSelectors.TABLE_ACTION_BTN_TEMPLATE.format(app_name)
-        ).first.click()
-        self.page.locator(UsersSelectors.REMOVE_ROLE_OPT).click()
-        self.page.locator(UsersSelectors.REMOVE_ROLE_BTN).click()
-        self.page.wait_for_selector(UsersSelectors.NOTIFICATION_OK_CLOSE_BTN)
+            UsersSelectors.TABLE_ACTION_BTN_TEMPLATE.format(user_email)
+        ).click()
+        self.page.locator(UsersSelectors.RESEND_EMAIL_INVITE_BTN).click()
+        self.page.locator(UsersSelectors.INVITE_USERS_SEND_INVITE_BTN).click()
+        self.page.wait_for_load_state("domcontentloaded")
         self.pw_utils.save_screenshot(self.test_name)
-        self.page.locator(UsersSelectors.NOTIFICATION_OK_CLOSE_BTN).click()
+        return self
+
+    def click_on_cancel_btn(self):
+        """
+        Click on Cancel button while performing delete users action from users page.
+        """
+        log.info("Playwright: Clicking on Cancel button")
+        self.page.locator(UsersSelectors.CANCEL_DELETE_CONFIRM_BTN).click()
         return self
 
     def should_have_search_field(self):
@@ -314,4 +322,35 @@ class Users(HeaderedPage):
         self.search_for_text(user_email)
         selector = UsersSelectors.USER_STATUS_TEMPLATE.format(user_email, role)
         expect(self.page.locator(selector)).to_be_visible()
+        return self
+
+    def should_not_have_invite_user_btn(self):
+        """
+        Check absence of invite user button
+        :return: current instance of users page object.
+        """
+        log.info("Playwright: Checking the absence of invite user button")
+        expect(self.page.locator(UsersSelectors.INVITE_USERS_BUTTON)).not_to_be_visible()
+        return self
+
+    def should_have_invite_user_btn(self):
+        """
+        Checking the presence of invite user button
+        :return: current instance of users page object.
+        """
+        log.info("Playwright: Checking the presence of invite user button")
+        expect(self.page.locator(UsersSelectors.INVITE_USERS_BUTTON)).to_be_visible()
+        return self
+
+    def should_have_error_notification_message(self):
+        """
+        Checking the presence of notification message while User try to delete itself from the users page,
+        :return: current instance of users page object.
+        """
+        log.info(
+            "Playwright: Checking the presence of notification while deleting Already Logged-in User"
+        )
+        expect(
+            self.page.locator(UsersSelectors.DELETED_USER_NOTIFICATION)
+        ).to_be_visible()
         return self

@@ -9,6 +9,56 @@ log = logging.getLogger(__name__)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+# TODO: Refactor: remove "AOP_Random_Utils" and its methods after replacing their calls (in tests and other lib-modules)
+# by corresponding methods from "RandomGenUtils" class below (GLCP-36232, GLCP-38251)
+class AOP_Random_Utils:
+    """
+    Helper functions for AOP libs
+    """
+
+    def __init__(self):
+        pass
+
+    def generate_random_alphanumeric_string(self, length_of_random_string=7):
+        """
+
+        :rtype: string
+        :type length_of_random_string: int
+        """
+        # using random.choices()
+        # generating random strings
+        random_string_suffix = "".join(
+            random.choices(
+                string.ascii_uppercase + string.digits, k=length_of_random_string
+            )
+        )
+        # print result
+        # print("\nThe generated random string : {}\n".format(random_string_suffix))
+        return random_string_suffix
+
+    def generate_random_numeric_string(self, length_of_random_string=5):
+        """
+        Generates a random string of digits of the specified length.
+        :param length_of_random_string: number of digits to generate in string
+        :return: a string of randomly generated digits
+        """
+        return "".join(random.choices(string.digits, k=length_of_random_string))
+
+    def generate_random_MAC_address(self, mac_prefix="00:00:00"):
+        """
+
+        :return: random MAC address starting with 24 bit mac_prefix specified
+        :rtype: string
+        """
+        # Randomize the NIC bits for MAC
+        local_mac_random = mac_prefix + ":%02x:%02x:%02x" % (
+            random.randint(0, 255),
+            random.randint(0, 255),
+            random.randint(0, 255),
+        )
+        return local_mac_random.upper()
+
+
 class RandomGenUtils:
     """Helper methods for generating random data."""
 

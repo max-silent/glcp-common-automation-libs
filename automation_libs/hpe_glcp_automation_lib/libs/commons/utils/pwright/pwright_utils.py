@@ -242,7 +242,6 @@ class TableUtils:
         self.page = page
         self.head_columns = '[data-testid="table"]>thead>tr>th'
         self.table_rows = '[data-testid="table"]>tbody>tr'
-        self.row_template = '[data-testid="table"]>tbody>tr:nth-child({})'
         self.row_columns_template = (
             '[data-testid="table"]>tbody>tr:nth-child({row_index})>td,'
             '[data-testid="table"]>tbody>tr:nth-child({row_index})>th'
@@ -426,26 +425,24 @@ class TableUtils:
             if checkbox_locator.locator("svg[viewBox]").is_hidden():
                 checkbox_locator.click()
 
-    def should_have_row_with_text_in_column(self, column_name, value):
-        """
-        Check that row with matched text in specified column is present and visible in table.
+    def get_column_value_for_row_index(self, column_name, row_index):
+        """Get text value of specified column at sepecified row index.
 
-        :param column_name: column name where matching text should be looked at.
-        :param value: text to be matched.
+        :param row_index: row index to get value from (starting from 1).
+        :param column_name: name of the column, whose value is going to be retrieved.
+        :return: text content (str) of the column from the first matched row.
         """
-        log.info(
-            f"Playwright: check that row with text '{value}' in column '{column_name}' is present in table."
+        found_index = self.get_column_index_by_name(column_name)
+        if not found_index:
+            raise ValueError(f"Not found column '{column_name}'.")
+        # CSS-locator index starts from 1, but nth() argument value starts from 0
+        column_index = found_index - 1
+        column_value = (
+            self.page.locator(self.row_columns_template.format(row_index=row_index))
+            .nth(column_index)
+            .text_content()
         )
-        matching_rows_indices = self.get_rows_indices_by_text_in_column(
-            column_name, value
-        )
-        if not matching_rows_indices:
-            raise ValueError(
-                f"Not found rows with '{value}' value at '{column_name}' column."
-            )
-        expect(
-            self.page.locator(self.row_template.format(matching_rows_indices[0]))
-        ).to_be_visible()
+        return column_value
 
 
 def browser_stop(context, page, test_name):

@@ -7,8 +7,7 @@ import logging
 from playwright.sync_api import Page
 
 from hpe_glcp_automation_lib.libs.authz.ui.locators import RRPSelectors
-from hpe_glcp_automation_lib.libs.authz.ui.rrp_details_page import RRPDetails
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
 from hpe_glcp_automation_lib.libs.commons.utils.pwright.pwright_utils import TableUtils
 
 log = logging.getLogger(__name__)
@@ -53,16 +52,17 @@ class ResourceRestrictionPolicy(HeaderedPage):
         self.wait_for_loaded_table()
         return self
 
-    def navigate_to_rrp_details_page(self, rrp_name, rrp_id):
+    def filter_search_results(self, app_name):
+        """Filter search results by application name.
+
+        :param app_name: application name to be used in filter.
+        :return: current instance of resource restriction policy page object.
         """
-        Return rrp details object for given rrp name.
-        :param rrp_name: rrp name
-        :params rrp_id: rrp id
-        :return RRPDetails: RRP details page object
-        """
-        self.search_for_text(rrp_name)
-        self.pw_utils.click_selector(RRPSelectors.OPEN_RRP_TEMPLATE.format(rrp_name))
-        return RRPDetails(self.page, self.cluster, rrp_id)
+        log.info(f"Playwright: filter results by '{app_name}' application.")
+        self.page.locator(RRPSelectors.FILTER_BUTTON).click()
+        self.page.locator(RRPSelectors.FILTER_OPTION_TEMPLATE.format(app_name)).click()
+        self.page.locator(RRPSelectors.APPLY_FILTERS_BUTTON).click()
+        return self
 
     def create_resource_restriction_policy(
         self, rrp_name, application_name, resource_name="Group Scope", resource_opt=None
@@ -114,9 +114,9 @@ class ResourceRestrictionPolicy(HeaderedPage):
             )
             if checkbox_locator.locator("svg[viewBox]").is_hidden():
                 checkbox_locator.click()
-        self.pw_utils.click_selector(RRPSelectors.ADD_BTN)
-        self.pw_utils.click_selector(RRPSelectors.NEXT_BUTTON)
-        self.pw_utils.click_selector(RRPSelectors.FINISH_BUTTON)
+        self.page.locator(RRPSelectors.ADD_BTN).click()
+        self.page.locator(RRPSelectors.NEXT_BUTTON).click()
+        self.page.locator(RRPSelectors.FINISH_BUTTON).click()
         self.wait_for_loaded_table()
         self.pw_utils.save_screenshot(self.test_name)
         return self
@@ -139,4 +139,15 @@ class ResourceRestrictionPolicy(HeaderedPage):
         self.page.locator(RRPSelectors.DELETE_POLICY_BUTTON).first.click()
         self.wait_for_loaded_table()
         self.pw_utils.save_screenshot(self.test_name)
+        return self
+
+    def clear_filter(self):
+        """
+        Clicks clear filters button
+
+        :param: self
+        :return: current instance of resource restriction policy page object.
+        """
+        log.info(f"Playwright: clear RRP page filter.")
+        self.page.locator(RRPSelectors.CLEAR_FILTERS_BUTTON).click()
         return self

@@ -55,6 +55,10 @@ class DevicesInventorySelectors:
     CANCEL_FILTER_BTN = '[data-testid="cancel-filter-btn"]'
     APPLY_FILTERS_BTN = '[data-testid="apply-filters-btn"]'
     DEVICE_INVENTORY_TITLE = '[data-testid="heading-device-page-title"]'
+    TABLE_ROWS_CHECK_ICONS_BY_ROW = (
+        '[data-testid="table"]>tbody>tr:nth-child({row_index})>td:nth-of-type(1)'
+    )
+    TOTAL_DEVICES_COUNT = '[data-testid="all-devices-tab-summary"]'
 
 
 class DeviceDetailsSelectors:
@@ -73,6 +77,17 @@ class DeviceDetailsSelectors:
     FOLDER_NAME_VALUE = '[data-testid="text-folder_name-value"]'
     PCID_VALUE = '[data-testid="text-platform_customer_id-value"]'
     TAG_TEMPLATE = "button>div>span:has-text('{}')"
+    APP_INSTANCE_VALUE = '[data-testid="text-application_instance-value"]'
+    ACTIONS_POPUP = "div[aria-hidden='false']"
+    ACTIONS_DROPDOWN = '[data-testid="device-action-btn"]'
+    REMOVE_ASSIGNMENT = '[data-testid="unassign-to-application-btn"]'
+    REMOVE_APP_ASSIGNMENT = '[data-testid="remove-app-assignments-btn"]'
+    ARCHIVE_BTN = "[data-testid='archive-unarchive-btn']:text-is('Archive')"
+    UNARCHIVE_BTN = "[data-testid='archive-unarchive-btn']:text-is('Unarchive')"
+    ARCHIVE_CONFIRM_BTN = '[data-testid="archive-confirm-btn"]'
+    VIEW_AUDIT_LOG_BTN = '[data-testid="view-audit-log-btn"]'
+    CANCEL_BTN = '[data-testid="cancel-btn"]'
+    ASSIGN_APPLICATION_BTN = '[data-testid="assign-to-application-btn"]'
 
 
 class ActivateDevicesSelectors:
@@ -158,42 +173,11 @@ class ActivateFoldersSelectors:
     POPUP_CREATE_BTN = '[data-testid="create-btn"]'
 
 
-class DevicesHistorySelectors:
-    """Selectors, used in "DevicesHistory" class.
-    Related URL: ".../manage-account/activate/devices/{serial}"
-    """
-
-    LOADER_SPINNER = '[data-testid="devices-loader"]'
-    HEADING_PAGE_TITLE = '[data-testid="heading-page-title"]'
-
-    DEVICE_HISTORY_TITLE = '[data-testid="heading-device-history"]'
-    EDIT_DEVICE_BUTTON = '[data-testid="edit-device-details-btn"]'
-    MOVE_TO_FOLDER_BUTTON = '[data-testid="move-to-folder-btn"]'
-    BACK_TO_DEVICES_BUTTON = '[data-testid="devices-btn"]'
-    PAGINATION_BAR = '[data-testid="pagination-device-history-table"]'
-
-    TABLE_ROWS = '[data-testid="table"]>tbody>tr'
-    TABLE_ROW_TEMPLATE = '[data-testid="table"]>tbody>tr:nth-child({})'
-
-
-class ActivateSideMenuSelectors:
-    """Selectors, used in "SideMenuNavigablePage" class.
-    Note: it's page-element class, which included as part of different page-object classes, related to different URLs.
-    """
-
-    DEVICES_TAB_BUTTON = '[data-testid="devices-tab"]'
-    FOLDERS_TAB_BUTTON = '[data-testid="folders-tab"]'
-    DOCUMENTATION_TAB_BUTTON = '[data-testid="desc-activate-documentation-tab"]'
-
-
 class AddDevicesSelectors:
     """Selectors, used in "AddDevices" class.
     Related URL: ".../devices/inventory/add-devices"
     """
 
-    DEVICE_TYPE_DROPDOWN = '[data-testid="device-type-dropdown-wizard"]'
-    NEXT_BUTTON = '[data-testid="button-next"]'
-    ENTER_BUTTON = '[data-testid="enter-btn"]'
     FINISH_BUTTON = '[data-testid="button-finish"]'
 
     CSV_FILE_RADIO = 'div[class*="Radio"]:has(input[value="csv_file"])'
@@ -209,16 +193,31 @@ class AddDevicesSelectors:
     SERIAL_AND_MAC_RADIO = (
         'div[class*="Radio"]:has(input[value="serial_number_and_mac_address"])'
     )
-    SERIAL_NUMBER_INPUT = '[data-testid="serial-number-input"]'
     MAC_ADDRESS_INPUT_SERIAL = '[data-testid="input-data-input"]'
+
+    # Storage Devices selectors
+    IAAS_RADIO = 'div[class*="Radio"]:has(input[value="infrastructure_as_a_service"])'
+    PURCHASE_OR_LEASE_RADIO = 'div[class*="Radio"]:has(input[value="purchase_or_lease"])'
+    PART_NUMBER_INPUT = '[data-testid="input-data-input"]'
+    SUBSCRIPTION_KEY_INPUT = '[data-testid="input-data-input"]'
+
+    # Common selectors
+    SERIAL_NUMBER_INPUT = '[data-testid="serial-number-input"]'
 
     TABLE_ROWS = '[data-testid="table"]>tbody>tr'
 
     DELIVERY_CONTACT_DROPDOWN = '[data-testid="service-delivery-contact-input"]'
     DELIVERY_CONTACT_LIST_ITEM = 'button[role="option"]'
 
+    DEVICE_TYPE_DROPDOWN = '[data-testid="device-type-dropdown-wizard"]'
+    NEXT_BUTTON = '[data-testid="button-next"]'
+    ENTER_BUTTON = '[data-testid="enter-btn"]'
     VIEW_AUDIT_LOG_BTN = '[data-testid="view-audit-log-btn"]'
     CLOSE_BTN = '[data-testid="close-btn"]'
+    HEADER_TITLE = '[data-testid="text-wizard-header"]'
+    CANCEL_BTN = '[data-testid="button-header-cancel"]'
+    CANCEL_EXIT_BTN = '[data-testid="button-cancel-exit"]'
+    CANCEL_CONT_BTN = '[data-testid="button-cancel-continue"]'
 
 
 class ActivateFolderDetailsSelectors:
@@ -297,6 +296,18 @@ class ActivateDeviceDetailsSelectors:
     SAVE_CHANGES_BTN = '[data-testid = "save-changes-btn"]'
     DEVICE_UPDATED_SUCCESS_NOTIFICATION = '[data-testid = "notification-status-ok"]'
 
+    LOADER_SPINNER = '[data-testid="devices-loader"]'
+    HEADING_PAGE_TITLE = '[data-testid="heading-page-title"]'
+
+    DEVICE_HISTORY_TITLE = '[data-testid="heading-device-history"]'
+    EDIT_DEVICE_BUTTON = '[data-testid="edit-device-details-btn"]'
+    MOVE_TO_FOLDER_BUTTON = '[data-testid="move-to-folder-btn"]'
+    BACK_TO_DEVICES_BUTTON = '[data-testid="devices-btn"]'
+    PAGINATION_BAR = '[data-testid="pagination-device-history-table"]'
+
+    TABLE_ROWS = '[data-testid="table"]>tbody>tr'
+    TABLE_ROW_TEMPLATE = '[data-testid="table"]>tbody>tr:nth-child({})'
+
 
 class ActivateDocumentationSelectors:
     """Selectors, used in "ActivateDocumentation" class.
@@ -305,3 +316,56 @@ class ActivateDocumentationSelectors:
 
     ACTIVATE_DOC_CONTENT = '[data-testid = "text-activate-documentation-content"]'
     ACTIVATE_DOC_LINK = '[data-testid = "here-anchor"]'
+
+
+class DeviceTagSelectors:
+    """Selectors, used in "ActivateDocumentation" class.
+    Related URL: ".../devices/tags"
+    """
+
+    ACTIONS_MENU_TEMPLATE = 'tr:has(th :text("{}")) [data-testid=tag-multiple-action-btn]'
+    VIEW_RESOURCES_OPTION = "data-testid=view-resources-btn"
+    SEARCH_FIELD = '[data-testid="search-field"]'
+    LOADER_SPINNER = '[data-testid$="spinner-with-text"]'
+    TAGS_TABLE_ROWS = '[data-testid="table"] > tbody > tr'
+    TAGS_TABLE_NAME_COLS = '[data-testid="table"] > tbody > tr > th'
+
+
+class AutoSubscribeSelectors:
+    """Selectors, used in "ActivateDocumentation" class.
+    Related URL: ".../devices/auto-subscribe"
+    """
+
+    ADD_AUTOSUBSCRIBE_BTN = (
+        "[data-testid='set-up-auto-subscribe-btn'], [data-testid='add-btn']"
+    )
+    AUTO_SUBS_LIST_TEMPLATE = (
+        "[data-testid={}-card] [data-testid='text-subscription-tier']"
+    )
+    DELETE_BTN_TEMPLATE = (
+        "[data-testid={}-card] [data-testid='auto-subscribe-delete-btn']"
+    )
+    EDIT_BTN_TEMPLATE = "[data-testid={}-card] [data-testid='auto-subscribe-edit-btn']"
+    CONFIRM_DELETE = "[data-testid='okay-btn']"
+    SELECT_DEVICE_TYPE = "[data-testid='device-type-input']"
+    SUBSCRIPTION_TIER_TYPE = "[data-testid='subscription-tier-input']"
+    SUBSCRIPTION_TIER_MENU_ITEM_TEMPLATE = '[role=option]:text("{}")'
+    AUTO_SUBSCRIPTIONS_LIST = "[data-testid=auto-subcribe-container]"
+    CONFIGURE_DEVICE_BTN = "[data-testid='configure-device-button']"
+    SAVE_BTN = "[data-testid='auto-subscribe-save-btn']"
+    UPDATE_OK_BTN = "[data-testid='okay-btn']"
+    UPDATE_CANCEL_BTN = "[data-testid='cancel-btn']"
+    SUCCESS_NOTIF_CLOSE_BTN = "[data-testid='success-api-notification'] [type='button']"
+
+
+class AssignDeviceToServiceManager:
+    SERVICE_MANAGER_DROPDOWN = '[data-testid="network-devices-application-dropdown"]'
+    SERVICE_MANAGER_TEMPLATE = '[type="button"]:text-is("{}")'
+    REGION_DROPDOWN = '[data-testid="network-devices-application-instance-dropdown"]'
+    REGION_TEMPLATE = '[type="button"]:text-is("{}")'
+    FINISH_BTN = '[data-testid="button-finish"]'
+    CLOSE_BTN = '[data-testid="close-btn"]'
+
+
+class DevSubscriptionDetailsSelectors:
+    SUBSCRIPTION_INFO_HEADER = '[data-testid="device-subscription-details-header"] h1:text-is("Subscription Information")'

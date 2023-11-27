@@ -7,7 +7,7 @@ import logging
 from playwright.sync_api import Page, expect
 
 from hpe_glcp_automation_lib.libs.authn.ui.locators import AuthenticationPageSelectors
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
 
 log = logging.getLogger(__name__)
 
@@ -25,6 +25,7 @@ class Authentication(HeaderedPage):
         """
         log.info("Initialize Authentication page object")
         super().__init__(page, cluster)
+        self.url = f"{cluster}/manage-account/authentication"
 
     def claim_domain(
         self,
@@ -137,14 +138,14 @@ class Authentication(HeaderedPage):
         self.page.locator(AuthenticationPageSelectors.DELETE_DOMAIN_MSG_BTN).click()
         return self
 
-    def validate_saml_attributes(self, domain, entity_id, sign_on_url, app_ids=[]):
+    def validate_saml_attributes(self, domain, entity_id, sign_on_url, app_ids=None):
         """
         Validate saml attributes of claimed domain on glcp
 
         :param domain: claimed domain
         :param entity_id: entity url of the cluster
         :param sign_on_url: single sign on url
-        :param app_id: installed applications ids
+        :param app_ids: installed applications ids
         return self: instance
         """
         log.info(f"Playwright: Validating SAML attributes")
@@ -160,9 +161,20 @@ class Authentication(HeaderedPage):
             self.page.locator(AuthenticationPageSelectors.SIGN_ON_URL_VALUE)
         ).to_contain_text(sign_on_url)
         if app_ids:
-            for id in app_ids:
+            for app_id in app_ids:
                 expect(
-                    self.page.locator(AuthenticationPageSelectors.APP_ID_VALUE.format(id))
+                    self.page.locator(
+                        AuthenticationPageSelectors.APP_ID_VALUE.format(app_id)
+                    )
                 ).to_be_visible()
         self.page.locator(AuthenticationPageSelectors.CLOSE_BTN).click()
+        return self
+
+    def should_have_text_in_title(self):
+        """
+        Check that expected text matches with the heading page title.
+        :return: current instance of Authentication page object.
+        """
+        log.info("Playwright: check that title has matched text in Authentication page.")
+        expect(self.page.locator(AuthenticationPageSelectors.PAGE_TITLE)).to_be_visible()
         return self

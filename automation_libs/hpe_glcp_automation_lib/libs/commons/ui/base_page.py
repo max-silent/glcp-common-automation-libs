@@ -94,3 +94,14 @@ class BasePage:
             text, timeout=timeout
         )
         return self
+
+    def should_have_page_title(self, text):
+        """
+        Check that current page's title match to expected text.
+        :param text: expected title text.
+        :return: instance of current page object
+        """
+        log.info(f"Playwright: Verifying page title with text {text}")
+        self.page.wait_for_load_state()
+        expect(self.page).to_have_title(text)
+        return self

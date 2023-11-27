@@ -1,7 +1,7 @@
 import logging
 
 import pyotp
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from hpe_glcp_automation_lib.libs.acct_mgmt.ui.choose_account_page import ChooseAccount
 from hpe_glcp_automation_lib.libs.authn.ui.locators import LoginPageSelectors
@@ -52,7 +52,6 @@ class Login(BasePage):
         :return: Choose Account (if user has several accounts) or Home Page (if only one account available) object
         """
         log.info(f"SSO Login by '{username}'.")
-        self.page.wait_for_selector(LoginPageSelectors.SSO_SIGN_IN)
         self.page.click(LoginPageSelectors.SSO_SIGN_IN)
         self.page.fill(LoginPageSelectors.SSO_EMAIL_INPUT, username)
         self.page.click(LoginPageSelectors.NEXT_BUTTON)
@@ -94,7 +93,7 @@ class Login(BasePage):
             return TacHomePage(self.page, self.cluster)
 
     def open(self):
-        """Opens the Login page and verified it is opened
+        """Opens the Login page and verifies it is opened
 
         :return: the instance of itself
         """
@@ -108,11 +107,11 @@ class Login(BasePage):
         :param username: str - User's email.
         return: instance of Login POM.
         """
-        self.pw_utils.click_selector(LoginPageSelectors.NEED_HELP_SIGING_IN)
-        self.pw_utils.click_selector(LoginPageSelectors.FRGT_PASSWD)
+        self.page.click(LoginPageSelectors.NEED_HELP_SIGING_IN)
+        self.page.click(LoginPageSelectors.FRGT_PASSWD)
         self.page.fill(LoginPageSelectors.ACC_RCVRY_USERNAME, username)
-        self.pw_utils.click_selector(LoginPageSelectors.RESET_VIA_EMAIL_BTN)
-        self.pw_utils.click_selector(LoginPageSelectors.BACK_TO_SIGN_BTN)
+        self.page.click(LoginPageSelectors.RESET_VIA_EMAIL_BTN)
+        self.page.click(LoginPageSelectors.BACK_TO_SIGN_BTN)
         return self
 
     def _login_account(self, username, password, remember_me=False):
@@ -129,3 +128,12 @@ class Login(BasePage):
         self.page.fill(LoginPageSelectors.PASSWD_PATH, password)
         self.pw_utils.save_screenshot(self.test_name)
         self.page.locator(LoginPageSelectors.SUBMIT_PATH).click()
+
+    def should_have_login_error_msg(self):
+        """
+        Verify that error msg appears on the screen after we fill Up the Wrong username and(or) password
+        :return: self reference
+        """
+        self.page.wait_for_load_state()
+        expect(self.page.locator(LoginPageSelectors.UNABLE_TO_SIGNIN)).to_be_visible()
+        return self

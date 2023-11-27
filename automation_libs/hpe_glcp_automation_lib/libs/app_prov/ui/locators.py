@@ -1,45 +1,9 @@
-class MyApplicationsSelectors:
-    LOADER_SPINNER = '[data-testid="loader-spinner"]'
-    HEADING_PAGE_TITLE = '[data-testid="heading-page-title"]'
-    REGION_DROPDOWN = '[data-testid="region-dropdown"]'
-    APPLICATION_TILE = '[data-testid^="application-tile-"]'
-    APPLICATION_CARD_TEMPLATE = "[data-testid='application-tile-{}']"
-    MYSERVICES_BTN = "[data-testid='text-desc-service-centric-menulist-my-services-link']"
-    SUBCRIPTIONS_BTN = (
-        "[data-testid='text-desc-service-centric-menulist-service-subscriptions-link']"
-    )
-    CATALOG_BTN = (
-        "[data-testid='text-desc-service-centric-menulist-service-catalog-link']"
-    )
-
-
-class AppNavigationSelectors:
-    MY_APPS_BTN = "[data-testid='menu-item-installed-apps']"
-    AVAILABLE_APPS_BTN = "[data-testid='menu-item-available-apps']"
-
-
-class AvailableAppsSelectors:
-    LOADER_SPINNER = '[data-testid="loader-spinner"]'
-    AVAILABLE_APPS_MSG = '[data-testid="no-data-title"]'
-    APPLICATION_CARDS = "[data-testid^='card-application-card-']"
-    APPLICATION_CARD_TEMPLATE = "[data-testid='card-application-card-{}']"
-    VIEW_DETAILS_BTN_TEMPLATE = '[data-testid="view-details-action-btn-{}"]'
-
-
-class AppsDetailsSelectors:
-    AVAILABLE_APPS = "data-testid='back-to-available-app'"
-    SETUP_APPLICATION_BTN = '[data-testid="set-up-application-btn"]'
-    ADD_APPLICATION_MODAL = '[data-testid="add-application-modal"]'
-    DEPLOYMENT_REGION = '[data-testid="deployment-region-dropdown"]'
-    REGION_OPTION_TEMPLATE = "button:text-is('{}')"
-    REGION_ELEMENT_ROLE = "option"
-    TERMS_CHECKBOX = '[data-testid="app-term-form"]'
-    DEPLOY_BTN = '[data-testid="add-region-btn"]'
-    CANCEL_BTN = "[data-testid='cancel-modal-btn']"
-    ADD_REGION_BTN = '[data-testid="add-application-btn"]'
-
-
 class InstalledAppsSelectors:
+    """Selectors, used in "InstalledApplications" class.
+    Related URL: ".../applications/installed-apps/{app_uuid}".
+    NOTE: DEPRECATED! (Not applicable to service-centric UI).
+    """
+
     MY_APPS = "[data-testid='my-apps-back-btn']"
     INSTALLED_APP_TEMPLATE = '[data-testid="installed-app-{}"]'
     APP_ACTION_BTN_TEMPLATE = (

@@ -55,10 +55,7 @@ class AdiAppApiHelper(ActivateInventory):
                 return True
             elif resp_message == "claimable":
                 return False
-        raise Exception(
-            f"Device verify_claim gave unexpected response with status {resp.status_code}, "
-            f"unable to tell whether the device is provisioned or not."
-        )
+        return False
 
     def _update_provisioning_info(self, existing_provisioning_info, updated_info):
         """

@@ -6,10 +6,10 @@ import logging
 from playwright.sync_api import Page, expect
 
 from hpe_glcp_automation_lib.libs.adi.ui.locators import ActivateDocumentationSelectors
-from hpe_glcp_automation_lib.libs.adi.ui.side_menu_navigable_page import (
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.side_menu_activate_navigable_page import (
     SideMenuNavigablePage,
 )
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
 from hpe_glcp_automation_lib.libs.commons.utils.pwright.pwright_utils import (
     PwrightUtils,
     TableUtils,

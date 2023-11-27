@@ -7,7 +7,7 @@ from playwright.sync_api import Page
 
 from hpe_glcp_automation_lib.libs.acct_mgmt.ui.create_user_data import UserPreferencesData
 from hpe_glcp_automation_lib.libs.acct_mgmt.ui.locators import UserPreferencesSelectors
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
 
 log = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ class UserPreferences(HeaderedPage):
         """
         Updates the given user preferences
 
-        :param UserPreferencesData
+        :param pref_data: UserPreferencesData
         :return: self
         """
         log.info("Updating the preferences")

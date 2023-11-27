@@ -6,8 +6,8 @@ import logging
 from playwright.sync_api import Page
 
 from hpe_glcp_automation_lib.libs.authz.ui.locators import RoleDetailsSelectors
-from hpe_glcp_automation_lib.libs.authz.ui.user_data import RoleDetailsData
-from hpe_glcp_automation_lib.libs.commons.ui.headered_page import HeaderedPage
+from hpe_glcp_automation_lib.libs.authz.ui.role_details_data import RoleDetailsData
+from hpe_glcp_automation_lib.libs.commons.ui.navigation.headered_page import HeaderedPage
 from hpe_glcp_automation_lib.libs.commons.utils.pwright.pwright_utils import TableUtils
 
 log = logging.getLogger(__name__)
@@ -66,5 +66,4 @@ class RoleDetails(HeaderedPage):
             role_data.description
         )
         self.pw_utils.click_selector(RoleDetailsSelectors.EDIT_ROLES_SAVE_BTN)
-        self.pw_utils.save_screenshot(self.test_name)
         return self

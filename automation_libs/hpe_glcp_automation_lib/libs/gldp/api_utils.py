@@ -95,21 +95,16 @@ class ApiUtils:
         :param response: Given response to validate the attribute values
         :param attr_path: jsonpath to retrieve the value
         for example : '$.level1.level2.level3'
-        :return: str | list
+        :return: str
         """
         json_response = json.loads(response.text)
         assert len(attr_path) > 0, "Given attr_path is empty"
-        matches = parse(attr_path).find(json_response)
-        extracted_attr_value = [match.value for match in matches]
-        assert extracted_attr_value, f"Attribute values for path: '{attr_path}' is Empty"
+        jsonpath_expr = parse(attr_path)
+        extracted_attr_value = jsonpath_expr.find(json_response)[0].value
         log.info(
-            "Attribute values for path: '%s' is : %s", attr_path, extracted_attr_value
+            "Attribute value for path: '%s' is : %s", attr_path, extracted_attr_value
         )
-        return (
-            extracted_attr_value
-            if len(extracted_attr_value) > 1
-            else extracted_attr_value[0]
-        )
+        return extracted_attr_value
 
     @staticmethod
     def api_post_call(endpoint, request_body, headers=None, authentication=None):
@@ -167,7 +162,7 @@ class ApiUtils:
     @staticmethod
     def api_delete_call(endpoint, request_body=None, headers=None, authentication=None):
         """
-        This method is to perform DELETE operation on the given endpoint
+        This method is to perform DELETE operation on the given endpoints
         :param request_body:
         :param endpoint: Service host name
         :param params:
